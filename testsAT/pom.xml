@@ -18,7 +18,7 @@
 
     <groupId>com.stratio.paas</groupId>
     <artifactId>marathon-lb-sec-AT</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-RC1-SNAPSHOT</version>
     <name>marathon-lb-sec-AT</name>
 
     <build>
