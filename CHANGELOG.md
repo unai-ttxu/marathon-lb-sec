@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (upcoming)
+## 0.2.0 (December 19, 2017)
 
 * [EOS-852] Expose certificates per app
 * Python kms_utils wrapper
