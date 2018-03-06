@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.1 (upcoming)
+## 0.3.1 (March 06, 2018)
 
 * [EOS-1074] Fix to tcplog format in tcp backends
 * Fix isolate failed backends when regenerating config
