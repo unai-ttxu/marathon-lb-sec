@@ -19,7 +19,7 @@ hose {
                                       'DCOS_PASSWORD=1234',
                                       'BOOTSTRAP_USER=operador',
                                       'PEM_FILE_PATH=/paascerts/PaasIntegration.pem'],
-                           'sleep':  20]]
+                           'sleep':  40]]
         ]
 
     INSTALLPARAMETERS = """
