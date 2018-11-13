@@ -8,8 +8,7 @@ import org.testng.annotations.Test;
 @CucumberOptions(features = {
         "src/test/resources/features/functionalAT/MARATHONLB_1386/01_MARATHONLB_1386_AppCertificate.feature",
         "src/test/resources/features/functionalAT/MARATHONLB_1386/02_MARATHONLB_1386_ClientCertificate.feature"
-})
-
+},format = "json:target/cucumber.json")
 public class QATM_1386_Certificates_IT extends BaseTest {
 
     public QATM_1386_Certificates_IT() {

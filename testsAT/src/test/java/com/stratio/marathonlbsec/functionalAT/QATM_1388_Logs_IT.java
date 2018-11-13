@@ -7,9 +7,7 @@ import org.testng.annotations.Test;
 
 @CucumberOptions(features = {
         "src/test/resources/features/functionalAT/MARATHONLB_1388/MARATHONLB_1388_CentralizedLogs.feature",
-
-})
-
+},format = "json:target/cucumber.json")
 public class QATM_1388_Logs_IT extends BaseTest {
 
     public QATM_1388_Logs_IT() {
