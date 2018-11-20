@@ -18,6 +18,6 @@ CONSUL_DATACENTER=$(grep -Po '"consulDatacenter":\s"(\d*?,|.*?[^\\]")' /stratio_
 
 curl -k -s -GET -H "X-Vault-Token:${VAULT_TOKEN}" "https://vault.service.${INTERNAL_DOMAIN}:8200/v1/userland/certificates/marathon-lb" | jq .data > /stratio_volume/marathon-lb-cert-backup.json
 
-cd /stratio/paas-secret-utils/
+cd /stratio/*secret-utils/
 bash -e gencerts -l /stratio_volume/certs_client_marathonlb.list -w -v vault.service.$INTERNAL_DOMAIN -o 8200 -t $VAULT_TOKEN -d $INTERNAL_DOMAIN -c $CONSUL_DATACENTER
 
