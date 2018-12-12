@@ -26,9 +26,12 @@ hose {
     INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
                     | -DBOOTSTRAP_IP=10.200.0.155
-		    | -DDCOS_IP=10.200.0.156
-		    | -DINSTALL_MARATHON=false
-		    | """.stripMargin().stripIndent()
+		                | -DDCOS_IP=10.200.0.156
+		                | -DINSTALL_MARATHON=false
+                    | -DDCOS_CLI_HOST=%%DCOSCLI#0
+                    | -DSELENIUM_GRID=selenium391.cd:4444
+                    | -DFORCE_BROWSER=chrome_64%%JUID
+		                | """.stripMargin().stripIndent()
                     
 
 
