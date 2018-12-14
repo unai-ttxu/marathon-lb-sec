@@ -1,65 +1,36 @@
 @rest
 Feature: [QATM-1870] Service_Installation
-  Background: Setup DCOS-CLI
-    #Start SSH with DCOS-CLI
-    Given I open a ssh connection to '${DCOS_CLI_HOST}' with user 'root' and password 'stratio'
-
-  Scenario: [QATM-1870][01] Marathon-LB Installation - Retrive token of enviroment
-    When I open a ssh connection to '${BOOTSTRAP_IP}' with user '${ROOT_USER:-root}' and password '${ROOT_PASSWORD:-stratio}'
-    When I run 'cat /stratio_volume/vault_response |jq '.root_token'| tr -d "\""' in the ssh connection and save the value in environment variable 'root_token'
-    Then  I run 'echo !{root_token}' in the ssh connection
-
-  @web
-  Scenario: [QATM-1870][02] Marathon-LB Installation -Retrieve cookies
-    Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user 'admin' and password '1234'
-    Given My app is running in '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
-    #Login into the platform
-    When I securely browse to '#/login'
-    And I wait '5' seconds
-    When '1' elements exists with 'id:oauth-iframe'
-    And I switch to the iframe on index '0'
-    And '1' elements exists with 'xpath://*[@id="username"]'
-    And I type 'admin' on the element on index '0'
-    And '1' elements exists with 'xpath://*[@id="password"]'
-    And I type '1234' on the element on index '0'
-    And '1' elements exists with 'id:login-button'
-    And I click on the element on index '0'
-    And I wait '5' seconds
-    Given I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
-    When I securely browse to '/service/deploy-api/swagger-ui.html#!/'
-    Then I save selenium cookies in context
-    And I save selenium dcos acs auth cookie in variable 'DCOS_AUTH_COOKIE'
-    Then  I run 'echo !{DCOS_AUTH_COOKIE}' locally
-
-  Scenario: [QATM-1870][03] Marathon-LB Installation - Get versions installed in Command Center
-    Given I run 'curl -s -XGET -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" -H 'Content-Type: application/json' -H 'Accept: application/json' https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/deploy-api/universe/marathon-lb | awk 'FNR == 1'| tr -d "\"" | tr -d []' in the ssh connection and save the value in environment variable 'relese_name'
-    When I run 'echo !{relese_name}' in the ssh connection
-    #Retrive relese version number
 
   @skipOnEnv(ADVANCED_CONFIGURATION=TRUE)
-  Scenario: [QATM-1870][04] Marathon-LB Simple Installation - Deploy service
-    #Retrieve Json-Schema
-    Given I run 'curl -XGET -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" -H 'Content-Type: application/json' -H 'Accept: application/json' https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/deploy-api/deploy/marathon-lb/!{relese_name}/schema?level=1' in the ssh connection and save the value in environment variable 'marathonlb-json-schema'
-    When I convert jsonSchema '!{marathonlb-json-schema}' to json and save it in variable 'marathonlb-basic.json'
-    Then  I run 'echo '!{marathonlb-basic.json}' > target/test-classes/schemas/cct/marathonlb-basic.json' locally
-    Given I create file 'marathonlb-with-variables.json' based on 'schemas/marathon-lb-sec-config.json' as 'json' with:
-      |$.general.serviceId                           | UPDATE  | ${MARATHON-LB-ID:-marathon-lb-sec}                                                                                                               |n/a     |
-    When I outbound copy 'target/test-classes/marathonlb-with-variables.json' through a ssh connection to '/tmp'
-    Given I run 'cat /tmp/marathonlb-with-variables.json' in the ssh connection and save the value in environment variable 'marathonlb'
-    And I run 'rm -f /tmp/marathonlb-with-variables.json' in the ssh connection
-    #Install MarathonLB
-    Given I run 'curl -XPOST -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" -H 'Content-Type: application/json' -H 'Accep  t: application/json' -d '!{marathonlb}' https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/deploy-api/deploy/marathon-lb/!{relese_name}/schema -i' in the ssh connection with exit status '0'
-    #Remove files
-    Then  I run 'echo '!{marathonlb-basic.json}' > src/test/resources/schemas/cct/marathonlb-basic.json' locally
+  Scenario: [QATM-1870][01] Marathon-LB Simple Installation - Deploy service
+    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '${DCOS_USER:-admin}' with user '${REMOTE_USER:-operador}' and pem file 'src/test/resources/credentials/${PEM_FILE:-key.pem}'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
+    # Obtain schema
+    When I send a 'GET' request to '/service/deploy-api/deploy/marathon-lb/${FLAVOUR}/schema?level=1'
+    Then I save element '$' in environment variable 'marathonlb-json-schema'
+    And I run 'echo !{marathonlb-json-schema}' locally
+    # Convert json
+    And I convert jsonSchema '!{marathonlb-json-schema}' to json and save it in variable 'marathonlb-basic.json'
+    And I run 'echo '!{marathonlb-basic.json}' > target/test-classes/schemas/marathonlb-basic.json' locally
+    # Launch installation
+    When I send a 'POST' request to '/service/deploy-api/deploy/marathon-lb/${FLAVOUR}/schema' based on 'schemas/marathonlb-basic.json' as 'json' with:
+      |$.general.serviceId                           | UPDATE  | ${MARATHON-LB-ID:-marathon-lb-sec}                                     |n/a     |
+    Then the service response status must be '202'
     And I run 'rm -f target/test-classes/schemas/cct/marathonlb-basic.json' locally
 
   @runOnEnv(ADVANCED_CONFIGURATION=TRUE)
-  Scenario: [QATM-1870][04] Marathon-LB Advanced Installation - Deploy service
-    #Retrieve Json-Schema
-    Given I run 'curl -XGET -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" -H 'Content-Type: application/json' -H 'Accept: application/json' https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/deploy-api/deploy/marathon-lb/!{relese_name}/schema?level=1' in the ssh connection and save the value in environment variable 'marathonlb-json-schema'
-    When I convert jsonSchema '!{marathonlb-json-schema}' to json and save it in variable 'marathonlb-basic.json'
-    Then  I run 'echo '!{marathonlb-basic.json}' > target/test-classes/schemas/cct/marathonlb-basic.json' locally
-    Given I create file 'marathonlb-with-variables.json' based on 'schemas/marathon-lb-sec-config.json' as 'json' with:
+  Scenario: [QATM-1870][01] Marathon-LB Advanced Installation - Deploy service
+    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '${DCOS_USER:-admin}' with user '${REMOTE_USER:-operador}' and pem file 'src/test/resources/credentials/${PEM_FILE:-key.pem}'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
+    # Obtain schema
+    When I send a 'GET' request to '/service/deploy-api/deploy/marathon-lb/${FLAVOUR}/schema?level=1'
+    Then I save element '$' in environment variable 'marathonlb-json-schema'
+    And I run 'echo !{marathonlb-json-schema}' locally
+    # Convert json
+    And I convert jsonSchema '!{marathonlb-json-schema}' to json and save it in variable 'marathonlb-advanced.json'
+    And I run 'echo '!{marathonlb-advanced.json}' > target/test-classes/schemas/marathonlb-advanced.json' locally
+    # Launch installation
+    When I send a 'POST' request to '/service/deploy-api/deploy/marathon-lb/${FLAVOUR}/schema' based on 'schemas/marathonlb-advanced.json' as 'json' with:
       | $.marathon-lb.auto-assign-service-ports      | REPLACE | ${AUTO_ASSIGN_SERVICE_PORTS:-false}                                                                                                                                                                 | boolean |
       | $.marathon-lb.bind-http-https                | REPLACE | ${BIND_HTTP_HTTPS:-true}                                                                                                                                                                            | boolean |
       | $.marathon-lb.cpus                           | REPLACE | ${CPUS:-2}                                                                                                                                                                                          | number  |
@@ -80,17 +51,12 @@ Feature: [QATM-1870] Service_Installation
       | $.marathon-lb.use_dynamic_authentication     | REPLACE | ${USE_DYNAMIC_AUTHENTICATION:-true}                                                                                                                                                                 | boolean |
       | $.marathon-lb.vault_token                    | UPDATE  | !{vaultToken}                                                                                                                                                                                       | n/a     |
       | $.marathon-lb.instance_app_role              | UPDATE  | ${INSTANCE_APP_ROLE:-open}                                                                                                                                                                          | n/a     |
-    When I outbound copy 'target/test-classes/marathonlb-with-variables.json' through a ssh connection to '/tmp'
-    Given I run 'cat /tmp/marathonlb-with-variables.json' in the ssh connection and save the value in environment variable 'marathonlb'
-    And I run 'rm -f /tmp/marathonlb-with-variables.json' in the ssh connection
-    #Install MarathonLB
-    Given I run 'curl -XPOST -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" -H 'Content-Type: application/json' -H 'Accep  t: application/json' -d '!{marathonlb}' https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/deploy-api/deploy/marathon-lb/!{relese_name}/schema -i' in the ssh connection with exit status '0'
-    #Remove files
-    Then  I run 'echo '!{marathonlb-basic.json}' > src/test/resources/schemas/cct/marathonlb-basic.json' locally
-    And I run 'rm -f target/test-classes/schemas/cct/marathonlb-basic.json' locally
+    Then the service response status must be '202'
+    And I run 'rm -f target/test-classes/schemas/cct/marathonlb-advanced.json' locally
 
-
-  Scenario: [QATM-1870][05] Marathon-LB Installation - Status
+  Scenario: [QATM-1870][02] Marathon-LB Installation - Status
+    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '${DCOS_USER:-admin}' with user '${REMOTE_USER:-operador}' and pem file 'src/test/resources/credentials/${PEM_FILE:-key.pem}'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
     #Check status in API
     When in less than '500' seconds, checking each '20' seconds, the command output 'curl -XGET -k -H "Cookie:dcos-acs-auth-cookie=!{DCOS_AUTH_COOKIE}" 'https://${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}/service/marathonlb/installer/status' | jq .healthy' contains '1'
     #Check status in DCOS
