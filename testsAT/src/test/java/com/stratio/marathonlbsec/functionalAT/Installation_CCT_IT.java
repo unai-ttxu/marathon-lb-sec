@@ -8,12 +8,13 @@ import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 @CucumberOptions(features = {
-        "src/test/resources/features/functionalAT/CCT_Installation_IT.feature"
+        "src/test/resources/features/functionalAT/010_Installation/CCT_Installation_IT.feature"
 },format = "json:target/cucumber.json")
 
 public class Installation_CCT_IT extends BaseTest {
-    @Factory(enabled = false, dataProviderClass = BrowsersDataProvider.class, dataProvider = "availableUniqueBrowsers")
-    public Installation_CCT_IT(String browser) { this.browser = browser; }
+
+    public Installation_CCT_IT() {
+    }
 
     @Test(enabled = true, groups = {"installation_cct"})
     public void AppWithSecurityES() throws Exception {

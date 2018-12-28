@@ -5,7 +5,7 @@ import com.stratio.tests.utils.BaseTest;
 import cucumber.api.CucumberOptions;
 import org.testng.annotations.Test;
 
-@CucumberOptions(features = { "src/test/resources/features/functionalAT/CCT_Uninstall_IT.feature" },format = "json:target/cucumber.json")
+@CucumberOptions(features = { "src/test/resources/features/functionalAT/099_Uninstall/CCT_Uninstall_IT.feature" },format = "json:target/cucumber.json")
 public class Uninstall_CCT_IT extends BaseTest {
 
     public Uninstall_CCT_IT() {

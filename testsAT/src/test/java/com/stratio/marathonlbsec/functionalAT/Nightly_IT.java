@@ -8,11 +8,10 @@ import org.testng.annotations.Factory;
 import com.stratio.qa.data.BrowsersDataProvider;
 
 @CucumberOptions(features = {
-        "src/test/resources/features/functionalAT/010_installation.feature",
-        "src/test/resources/features/functionalAT/MARATHONLB_1386/01_MARATHONLB_1386_AppCertificate.feature",
-        "src/test/resources/features/functionalAT/MARATHONLB_1386/02_MARATHONLB_1386_ClientCertificate.feature",
-        "src/test/resources/features/functionalAT/MARATHONLB_1388/MARATHONLB_1388_CentralizedLogs.feature"
-        //"src/test/resources/features/functionalAT/purge.feature"
+        "src/test/resources/features/functionalAT/010_Installation/CCT_Installation_IT.feature",
+        "src/test/resources/features/functionalAT/020_Certificates/01_MARATHONLB_1386_AppCertificate.feature",
+        "src/test/resources/features/functionalAT/020_Certificates/02_MARATHONLB_1386_ClientCertificate.feature",
+        "src/test/resources/features/functionalAT/030_Logs/MARATHONLB_1388_CentralizedLogs.feature"
 },format = "json:target/cucumber.json")
 public class Nightly_IT extends BaseTest {
 

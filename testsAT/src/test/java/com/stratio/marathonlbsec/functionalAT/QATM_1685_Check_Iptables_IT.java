@@ -6,7 +6,7 @@ import cucumber.api.CucumberOptions;
 import org.testng.annotations.Test;
 
 @CucumberOptions(features = {
-        "src/test/resources/features/functionalAT/QATM_1685_Check_Iptables.feature"
+        "src/test/resources/features/functionalAT/040_IpTables/QATM_1685_Check_Iptables.feature"
 },format = "json:target/cucumber.json")
 public class QATM_1685_Check_Iptables_IT extends BaseTest {
 

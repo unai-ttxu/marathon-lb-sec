@@ -3,17 +3,17 @@
 Feature: Deploying marathon-lb-sec with client certificate
 #Installing marathon-lb-sec
   @runOnEnv(INSTALL_MARATHON=true)
-  @include(feature:../010_installation.feature,scenario:[Install Marathon-lb][01])
-  @include(feature:../010_installation.feature,scenario:[Install Marathon-lb][02] Install using config file and cli)
-  @include(feature:../010_installation.feature,scenario:[Install Marathon][03][01] Check Marathon-lb has being installed correctly)
-  @include(feature:../010_installation.feature,scenario:[Install Marathon][03][02] Obtain node where marathon-lb-sec is running)
-  @include(feature:../010_installation.feature,scenario:[Install Marathon][03][03] Make sure service is ready)
-  Scenario: Prueba install
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon-lb][01])
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon-lb][02] Install using config file and cli)
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon][03][01] Check Marathon-lb has being installed correctly)
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon][03][02] Obtain node where marathon-lb-sec is running)
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon][03][03] Make sure service is ready)
+  Scenario: [MARATHONLB-1386] Install marathon-lb
     Then I wait '5' seconds
 
   @skipOnEnv(INSTALL_MARATHON=true)
-  @include(feature:../010_installation.feature,scenario:[Install Marathon][03][02] Obtain node where marathon-lb-sec is running)
-  Scenario: Prueba install
+  @include(feature:../010_Installation/010_installation.feature,scenario:[Install Marathon][03][02] Obtain node where marathon-lb-sec is running)
+  Scenario: [MARATHONLB-1386] Obtain marathon-lb node
     Then I wait '5' seconds
 
 #Deploying marathon with a clients certificate

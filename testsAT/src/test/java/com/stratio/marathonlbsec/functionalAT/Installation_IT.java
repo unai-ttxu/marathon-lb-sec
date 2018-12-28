@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
 import com.stratio.qa.data.BrowsersDataProvider;
 
-@CucumberOptions(features = { "src/test/resources/features/functionalAT/010_installation.feature" },format = "json:target/cucumber.json")
+@CucumberOptions(features = { "src/test/resources/features/functionalAT/010_Installation/010_installation.feature" },format = "json:target/cucumber.json")
 public class Installation_IT extends BaseTest {
 
     public Installation_IT() {
