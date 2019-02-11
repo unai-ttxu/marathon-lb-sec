@@ -2,11 +2,12 @@
 
 ## 0.4.0 (upcoming)
 
+* [EOS-1810] Include checking vault token state in healthcheck
 * Fix curl dependency and gpg keyserver in Dockerfile
 * [EOS-1074] Fix to tcplog format in tcp backends
 * Fix isolate failed backends when regenerating config
 
-## 0.3.1 (upcoming)
+## 0.3.1 (March 06, 2018)
 
 * [EOS-1074] Fix to tcplog format in tcp backends
 * Fix isolate failed backends when regenerating config

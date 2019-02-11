@@ -62,6 +62,7 @@ AES256-SHA256:!aNULL:!MD5:!DSS
   stats socket /var/run/haproxy/socket
   server-state-file global
   server-state-base /var/state/haproxy/
+  lua-load /marathon-lb/health.lua
   lua-load /marathon-lb/getpids.lua
   lua-load /marathon-lb/getconfig.lua
   lua-load /marathon-lb/getmaps.lua
@@ -87,7 +88,8 @@ listen stats
   balance
   mode http
   stats enable
-  monitor-uri /_haproxy_health_check
+  acl health path /_haproxy_health_check
+  http-request use-service lua.health if health
   acl getpid path /_haproxy_getpids
   http-request use-service lua.getpids if getpid
   acl getvhostmap path /_haproxy_getvhostmap
