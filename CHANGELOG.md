@@ -2,6 +2,7 @@
 
 ## 0.4.0 (upcoming)
 
+* [EOS-1816] Add new thread to renew vault token and fix token expire_time calculation
 * [EOS-1810] Include checking vault token state in healthcheck
 * Fix curl dependency and gpg keyserver in Dockerfile
 * [EOS-1074] Fix to tcplog format in tcp backends

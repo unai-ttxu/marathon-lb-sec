@@ -21,6 +21,7 @@ import argparse
 import hashlib
 import json
 import kms_utils
+import token_renewal
 import logging
 import os
 import os.path
@@ -1947,6 +1948,10 @@ if __name__ == '__main__':
                         args.strict_mode,
                         get_marathon_auth_params(args),
                         args.marathon_ca_cert)
+
+    # Here we should start token_renewal thread
+    token_renewal = token_renewal.TokenRenewal()
+    token_renewal.start()
 
     # If we're going to be handling events, set up the event processor and
     # hook it up to the process signals.
