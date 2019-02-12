@@ -2,6 +2,8 @@
 
 ## 0.4.0 (upcoming)
 
+* [EOS-1819] Download certificates only of new deployed apps
+* [EOS-1818] Download apps certificates following multitenant convention
 * [EOS-1817] Look for marathon-lb own cert following multitenant convention, fall back to "default" path if not found
 * [EOS-1825] Fix logger in haproxy_wrapper.py
 * [EOS-1816] Add new thread to renew vault token and fix token expire_time calculation

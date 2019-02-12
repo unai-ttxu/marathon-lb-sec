@@ -59,6 +59,7 @@ from utils import (CurlHttpEventStream, get_task_ip_and_ports, ip_cache,
 logger = None
 SERVICE_PORT_ASSIGNER = ServicePortAssigner()
 mlb_cert_name = ""
+previous_app_list = []
 
 class MarathonBackend(object):
 
@@ -1529,6 +1530,7 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
     KEY_EXT  = '.key'
     BKP_EXT  = '.bkp'
     O_FORMAT = 'PEM'
+    global previous_app_list
 
     logger.debug("Checking Vault token expiration")
     kms_utils.check_token_needs_renewal(False)    
@@ -1536,27 +1538,31 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
     logger.debug("Download certificates for appid (if not exists) from Vault")
     currentListAppidCert = list()
     for app in app_map_array:
-        
 
-        # TODO: When Vault will adapt the structure to allow store the tenant concept
-        # we will need to read the full path, plain it, or whatever.
-        #appid = list(app.keys())[0].replace('/','')
-        appid = list(app.keys())[0].split('/')[-1]
-
+        # appid should follow multitenant convention: replace "/" with "." and reverse the order
+        # So if app is /test/nginx, appid should be nginx.test
+        # Old appid is next comment 
+        #appid = list(app.keys())[0].split('/')[-1]        
+        appid = '.'.join(list(app.keys())[0].split('/')[::-1][:-1])
         currentListAppidCert.append(appid + CERT_EXT)
-        if not os.path.isfile(os.path.join(ssl_certs, appid + CERT_EXT)):
-            download_result = kms_utils.get_cert(CLUSTER, appid, appid, O_FORMAT, ssl_certs)
-            if download_result:
-                os.rename(os.path.join(ssl_certs, appid + CERT_EXT), os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
-                with open(os.path.join(ssl_certs, appid + CERT_EXT), 'wb') as wfd:
-                    for f in [os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT), os.path.join(ssl_certs, appid + KEY_EXT)]:
-                        with open(f,'rb') as fd:
-                            shutil.copyfileobj(fd, wfd, 1024*1024*10)
-                os.remove(os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
-                os.remove(os.path.join(ssl_certs, appid + KEY_EXT))
-                logger.info("Downloaded certificate " + appid + CERT_EXT)
-            else:
-                logger.info("Does not exists certificate for " + appid)
+
+        if app not in previous_app_list: 
+            
+            if not os.path.isfile(os.path.join(ssl_certs, appid + CERT_EXT)):
+                download_result = kms_utils.get_cert(CLUSTER, appid, appid, O_FORMAT, ssl_certs)
+                if download_result:
+                    os.rename(os.path.join(ssl_certs, appid + CERT_EXT), os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
+                    with open(os.path.join(ssl_certs, appid + CERT_EXT), 'wb') as wfd:
+                        for f in [os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT), os.path.join(ssl_certs, appid + KEY_EXT)]:
+                            with open(f,'rb') as fd:
+                                shutil.copyfileobj(fd, wfd, 1024*1024*10)
+                    os.remove(os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
+                    os.remove(os.path.join(ssl_certs, appid + KEY_EXT))
+                    logger.info("Downloaded certificate " + appid + CERT_EXT)
+                else:
+                    logger.info("Does not exists certificate for " + appid)
+
+    previous_app_list = app_map_array
 
     logger.debug("Clean certificates not present in the current appid list")
     for certfile in os.listdir(ssl_certs):
