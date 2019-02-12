@@ -48,8 +48,11 @@ def wait_on_haproxy_pipe(pipefd):
     logger.debug("wait_on_haproxy_pipe done (True)")
     return True
 
+syslog_socket = os.getenv("WRAPPER_SYSLOG_SOCKET")
+log_format = os.getenv("WRAPPER_LOG_FORMAT")
+log_level = os.getenv('WRAPPER_LOG_LEVEL')
 
-init_logger("/dev/null", "%(asctime)s.%(msecs)03d%(timezoneiso8601) %(levelname)s - 0 python %(name)s {\"@message\": \"%(message)s\"}", "DEBUG")
+init_logger(syslog_socket, log_format, log_level)
 logger = common.marathon_lb_logger.getChild('haproxy_wrapper.py')
         
 pipefd = create_haproxy_pipe()

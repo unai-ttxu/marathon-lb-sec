@@ -187,10 +187,37 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   INFO "Downloaded"
 fi
 
+export WRAPPER_SYSLOG_SOCKET=$SYSLOG_SOCKET
+WRAPPER_LOG_FORMAT_NEXT="false"
+WRAPPER_LOG_LEVEL_NEXT="false"
 for arg in "$@"; do
     escaped=$(printf %q "$arg")
     ARGS="$ARGS $escaped"
+
+    if [ $WRAPPER_LOG_FORMAT_NEXT = "true" ]; then
+        WRAPPER_LOG_FORMAT=$arg
+    fi
+    if [ $WRAPPER_LOG_LEVEL_NEXT = "true" ]; then
+        WRAPPER_LOG_LEVEL=$arg
+    fi
+
+    if [ "$arg" = "--log-format" ]; then
+        WRAPPER_LOG_FORMAT_NEXT="true"
+    else
+        WRAPPER_LOG_FORMAT_NEXT="false"
+    fi
+    if [ "$arg" = "--log-level" ]; then
+        WRAPPER_LOG_LEVEL_NEXT="true"
+    else
+        WRAPPER_LOG_LEVEL_NEXT="false"
+    fi
+
 done
+
+WRAPPER_LOG_FORMAT=${WRAPPER_LOG_FORMAT:-%(asctime)-15s %(name)s: %(message)s}
+export WRAPPER_LOG_FORMAT
+WRAPPER_LOG_LEVEL=${WRAPPER_LOG_LEVEL:-DEBUG}
+export WRAPPER_LOG_LEVEL
 
 cat > $LB_SERVICE/run << EOF
 #!/bin/sh
