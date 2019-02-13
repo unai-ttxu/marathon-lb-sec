@@ -40,10 +40,6 @@ hose {
     }
 
     INSTALL = { config ->
-       if (config.INSTALLPARAMETERS.contains('MLB_FLAVOUR')) {
-            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DFLAVOUR', '-DIGNOREPARAM')
-            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DMLB_FLAVOUR', '-DFLAVOUR')
-       }
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
 	       doAT(conf: config)
