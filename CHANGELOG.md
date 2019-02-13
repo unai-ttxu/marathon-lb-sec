@@ -2,6 +2,7 @@
 
 ## 0.4.0 (upcoming)
 
+* Adapt repo to new versioning flow
 * [EOS-1819] Download certificates only of new deployed apps
 * [EOS-1818] Download apps certificates following multitenant convention
 * [EOS-1817] Look for marathon-lb own cert following multitenant convention, fall back to "default" path if not found

@@ -9,4 +9,5 @@ else
 	VERSION=$1
 fi
 
-docker build . -t "stratio/marathon-lb-sec:$VERSION"
+echo "Modifying marathon-lb-sec version to: $1"
+echo $VERSION > VERSION

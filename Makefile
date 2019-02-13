@@ -1,7 +1,6 @@
 all: package
 change-version:
-	echo "Modifying version to: $(version)"
-	echo $(version) > VERSION
+	bin/change-version.sh $(version)
 package:
-	bin/package.sh
+	bin/package.sh $(version)
 
