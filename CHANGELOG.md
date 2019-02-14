@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 (upcoming)
+
+* Fix curl dependency and gpg keyserver in Dockerfile
+
 ## 0.3.1 (March 06, 2018)
 
 * [EOS-1074] Fix to tcplog format in tcp backends
