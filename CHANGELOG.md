@@ -2,6 +2,7 @@
 
 ## 0.3.2 (upcoming)
 
+* [EOS-1810] Include checking vault token state in healthcheck
 * Fix curl dependency and gpg keyserver in Dockerfile
 
 ## 0.3.1 (March 06, 2018)
