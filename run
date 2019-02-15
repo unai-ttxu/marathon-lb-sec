@@ -109,13 +109,38 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   INFO "Downloading certificates from vault..."
   SSL_CERTS="/marathon-lb/vault_certs"
   mkdir -p "$SSL_CERTS"
+  
+  # Try to download cert from MARATHON_APP_ID
+  # MARATHON_APP_ID can be of the form "/<folder1>/<folder2> ... /name", e.g. /test/nginx or /nginx
+  # The multitenant convention replaces "/" for "." and reverses the order, 
+  # For example, if MARATHON_APP_ID is /test/nginx, CONV_MARATHON_APP_ID should be nginx.test
+  # if MARATHON_APP_ID is /test1/test2/nginx, CONV_MARATHON_APP_ID should be nginx.test2.test1
+  OLD_IFS=${IFS}
+  IFS='/' read -r -a MARATHON_APP_ID_ARRAY <<< "$MARATHON_APP_ID"
+  IFS=${OLD_IFS}
+
+  unset "MARATHON_APP_ID_ARRAY[0]"
+  CONV_MARATHON_APP_ID=$(printf '%s\n' "${MARATHON_APP_ID_ARRAY[@]}" | tac | tr '\n' '.')
+  CONV_MARATHON_APP_ID=${CONV_MARATHON_APP_ID%?}
+  
+  INFO "Trying to download certificate from /userland/certificates/${CONV_MARATHON_APP_ID}"
+  set +e
+  getCert userland "${CONV_MARATHON_APP_ID}" "${CONV_MARATHON_APP_ID}" PEM "${SSL_CERTS}"
+  if [ $? -ne 0 ]
+  then
+     set -e
+     INFO "Certificate in /userland/certificates/${CONV_MARATHON_APP_ID} does not exist, falling back to default route /userland/certificates/marathon-lb"
+     getCert userland marathon-lb marathon-lb PEM "$SSL_CERTS"
+     CONV_MARATHON_APP_ID="marathon-lb"
+  fi
+  set -e
+
   # if provided Vault credentials, use it.
-  getCert userland marathon-lb marathon-lb PEM "$SSL_CERTS"  
-  chmod 644 "$SSL_CERTS/marathon-lb.pem"
-  cat "$SSL_CERTS/marathon-lb.key" >> "$SSL_CERTS/marathon-lb.pem"
-  rm -f "$SSL_CERTS/marathon-lb.key"
+  chmod 644 "$SSL_CERTS/$CONV_MARATHON_APP_ID.pem"
+  cat "$SSL_CERTS/$CONV_MARATHON_APP_ID.key" >> "$SSL_CERTS/$CONV_MARATHON_APP_ID.pem"
+  rm -f "$SSL_CERTS/$CONV_MARATHON_APP_ID.key"
   # Change the name to be the first alphabetical order certificate (SNI)
-  mv "$SSL_CERTS/marathon-lb.pem" "$SSL_CERTS/$MARATHON_LB_CERT_NAME"
+  mv "$SSL_CERTS/$CONV_MARATHON_APP_ID.pem" "$SSL_CERTS/$MARATHON_LB_CERT_NAME"
   # Copy the certificate to make it available in the old default path
   cp "$SSL_CERTS/$MARATHON_LB_CERT_NAME" /etc/ssl/cert.pem
 	
