@@ -14,7 +14,7 @@ global MAX_PERCENTAGE_EXPIRATION
 
 vault_token = os.getenv('VAULT_TOKEN', '')
 vault_accessor = os.getenv('ACCESSOR_TOKEN','')
-MAX_PERCENTAGE_EXPIRATION = 0.9
+MIN_PERCENTAGE_EXPIRATION = 0.2
 
 logger = None
 def init_log():
@@ -52,36 +52,42 @@ def check_token_needs_renewal(force):
   renewal = True
   jsonInfo = get_token_info()
   creationTime = jsonInfo['data']['creation_time']
-  ttl = jsonInfo['data']['ttl']
-  lastRenewalTime = 0
   
+  #Convert time as given from Vault to epoch time
+  expire_time_vault = jsonInfo['data']['expire_time']
+  expire_time_string = expire_time_vault.split('T')[0] + ' ' + expire_time_vault.split('T')[1].split('.')[0]
+  expire_time_tuple = time.strptime(expire_time_string, '%Y-%m-%d %H:%M:%S')
+  expire_time = time.mktime(expire_time_tuple)
+
+  ttl = jsonInfo['data']['ttl']
+  
+  lastRenewalTime = 0  
   try: 
     lastRenewalTime = jsonInfo['data']['last_renewal_time']
   except KeyError: pass
-  currentTime = int(time.time())
   
   if (lastRenewalTime > 0):
-    percentage = (currentTime - lastRenewalTime) / ttl
+    percentage = ttl / (expire_time - lastRenewalTime)
   else:
-    percentage = (currentTime - creationTime) / ttl
+    percentage = ttl / (expire_time - creationTime)
   
   logger.debug('Checked token expiration: percentage -> ' + str(percentage))
   
-  if (percentage >= MAX_PERCENTAGE_EXPIRATION and percentage < 1):
+  if (percentage <= MIN_PERCENTAGE_EXPIRATION and percentage > 0):
     logger.info('Token about to expire... need renewal')
-    renewal_token(ttl)
-  elif (percentage >= 1):
+    renewal_token()
+  elif (percentage <= 0):
     logger.info('Token expired... need renewal')
-    renewal_token(ttl)
+    renewal_token()
   elif force:
     logger.info('Forced renewal')
-    renewal_token(ttl)
+    renewal_token()
   else:
     renewal = False
 
   return renewal
 
-def renewal_token(ttl):
+def renewal_token():
   variables = ''.join(['export VAULT_TOKEN=', vault_token, ';'])
   command = 'token_renewal'
   resp,_ = exec_with_kms_utils(variables, command, '')
