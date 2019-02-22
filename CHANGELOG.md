@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.2 (upcoming)
+## 0.3.2 (February 22, 2019)
 
 * [EOS-1819] Download certificates only of new deployed apps
 * [EOS-1817] Look for marathon-lb own cert following multitenant convention, fall back to "default" path if not found
