@@ -11,7 +11,10 @@ import com.stratio.qa.data.BrowsersDataProvider;
         "src/test/resources/features/functionalAT/010_Installation/CCT_Installation_IT.feature",
         "src/test/resources/features/functionalAT/020_Certificates/01_MARATHONLB_1386_AppCertificate.feature",
         "src/test/resources/features/functionalAT/020_Certificates/02_MARATHONLB_1386_ClientCertificate.feature",
-        "src/test/resources/features/functionalAT/030_Logs/MARATHONLB_1388_CentralizedLogs.feature"
+        "src/test/resources/features/functionalAT/020_Certificates/QATM_2113_Certificates_MarathonLB_Service.feature",
+        "src/test/resources/features/functionalAT/030_Logs/MARATHONLB_1388_CentralizedLogs.feature",
+        "src/test/resources/features/functionalAT/030_Logs/QATM_2113_Log_Haproxy_Wrapper_Debug.feature",
+        "src/test/resources/features/functionalAT/030_Logs/QATM_2113_Vault_Renewal_Token.feature"
 },format = "json:target/cucumber.json")
 public class Nightly_IT extends BaseTest {
 
