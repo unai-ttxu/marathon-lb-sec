@@ -1307,7 +1307,7 @@ def get_health_check(app, portIndex):
 healthCheckResultCache = LRUCache()
 
 
-def get_apps(marathon, apps=[]):
+def get_apps(marathon, apps=[], groups=None):
     if len(apps) == 0:
         apps = marathon.list()
 
@@ -1522,7 +1522,38 @@ def get_apps(marathon, apps=[]):
             if service.backends:
                 apps_list.append(service)
 
-    return apps_list
+    # Create a new list with [{marathon_id: {marathon_labels}}]
+    # to pass to download_certificates_from_vault as modifying
+    # apps_list requires a lot of changes
+    if groups:
+        
+        groups = frozenset(groups)
+        apps_id_label_list = []
+        for marathon_app in marathon_apps:
+            
+            if str(marathon_app.appId) == os.environ.get("MARATHON_APP_ID"):
+                continue
+
+            for service in list(marathon_app.services.values()):
+                if service.haproxy_groups:
+                    if not has_group(groups, service.haproxy_groups):
+                        continue
+                elif not has_group(groups, service.groups):
+                    continue
+                # Skip if it's not actually enabled
+                if not service.enabled:
+                    continue
+
+                if service.backends:
+                    app_label_dict = dict({'id': str(marathon_app.appId), 'backends': str(service.backends), 'labels': marathon_app.app['labels']})
+                    if app_label_dict not in apps_id_label_list:
+                        apps_id_label_list.append(app_label_dict)
+
+    if not groups:
+        return apps_list
+    else:
+        return apps_list, apps_id_label_list
+
 
 def download_certificates_from_vault(app_map_array, ssl_certs):
     CLUSTER  = 'userland'
@@ -1534,33 +1565,63 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
 
     logger.debug("Checking Vault token expiration")
     kms_utils.check_token_needs_renewal(False)    
-    #{'/appid1': 'front/backend1'}, {'/folder/appid2': 'front/backend2'}
+    # app_map_array= [{'id': '/eos/nginx',
+    #'backends': "{MarathonBackend('192.168.121.67', '192.168.121.67', 31558)}",
+    # 'labels': {'HAPROXY_GROUP': 'external', 'HAPROXY_0_VHOST': 'service.mesosphere.com'}}"}]
     logger.debug("Download certificates for appid (if not exists) from Vault")
     currentListAppidCert = list()
     for app in app_map_array:
 
-        # appid should follow multitenant convention: replace "/" with "." and reverse the order
-        # So if app is /test/nginx, appid should be nginx.test
-        # Old appid is next comment 
-        #appid = list(app.keys())[0].split('/')[-1]        
-        appid = '.'.join(list(app.keys())[0].split('/')[::-1][:-1])
-        currentListAppidCert.append(appid + CERT_EXT)
+        logger.debug('Processing app: ' + str(app))
+        # Where the cert is located in Vault should come in a label
+        # HAPROXY_VAULT_CERT, that contains the full path to the cert 
+        # and its name WITHOUT '_crt'. E.g.:
+        # cert in /userland/certificates/nginx/nginx_crt should have
+        # label HAPROXY_VAULT_CERT=/userland/certificates/nginx/nginx
+
+        # If HAPROXY_VAULT_CERT does not exist, we fall back to 'traditional'
+        # path /userland/certificates/<last_part_of_marathon_id>/<last_part_of_marathon_id>_crt
+        if 'labels' in list(app.keys()):
+            vault_path = app['labels'].get('HAPROXY_VAULT_CERT')
+        
+        logger.debug('HAPROXY_VAULT_CERT label value is ' + str(vault_path))
+
+        if vault_path:
+            if vault_path[0] == '/':
+                CLUSTER = vault_path.split('/')[1]
+                appid = '/'.join(vault_path.split('/')[3:-1])
+                cert_vault_key = vault_path.split('/')[-1]
+            else:
+                CLUSTER = vault_path.split('/')[0]
+                appid = '/'.join(vault_path.split('/')[2:-1])
+                cert_vault_key = vault_path.split('/')[-1]
+        else:
+            appid = app['id'].split('/')[-1]
+            cert_vault_key = appid
+
+        logger.debug('Values for kms_utils are: cluster=' + CLUSTER +
+                     ',  appid=' + appid + ', cert_vault_key=' + cert_vault_key)
+
+        currentListAppidCert.append(cert_vault_key + CERT_EXT)
 
         if app not in previous_app_list: 
             
             if not os.path.isfile(os.path.join(ssl_certs, appid + CERT_EXT)):
-                download_result = kms_utils.get_cert(CLUSTER, appid, appid, O_FORMAT, ssl_certs)
+                download_result = kms_utils.get_cert(CLUSTER, appid, cert_vault_key,
+                                                     O_FORMAT, ssl_certs)
                 if download_result:
-                    os.rename(os.path.join(ssl_certs, appid + CERT_EXT), os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
-                    with open(os.path.join(ssl_certs, appid + CERT_EXT), 'wb') as wfd:
-                        for f in [os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT), os.path.join(ssl_certs, appid + KEY_EXT)]:
+                    os.rename(os.path.join(ssl_certs, cert_vault_key + CERT_EXT), 
+                              os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT))
+                    with open(os.path.join(ssl_certs, cert_vault_key + CERT_EXT), 'wb') as wfd:
+                        for f in [os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT),
+                                  os.path.join(ssl_certs, cert_vault_key + KEY_EXT)]:
                             with open(f,'rb') as fd:
                                 shutil.copyfileobj(fd, wfd, 1024*1024*10)
-                    os.remove(os.path.join(ssl_certs, appid + CERT_EXT + BKP_EXT))
-                    os.remove(os.path.join(ssl_certs, appid + KEY_EXT))
-                    logger.info("Downloaded certificate " + appid + CERT_EXT)
+                    os.remove(os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT))
+                    os.remove(os.path.join(ssl_certs, cert_vault_key + KEY_EXT))
+                    logger.info("Downloaded certificate " + cert_vault_key + CERT_EXT)
                 else:
-                    logger.info("Does not exists certificate for " + appid)
+                    logger.info("Does not exists certificate for " + list(app.keys())[0])
 
     previous_app_list = app_map_array
 
@@ -1574,12 +1635,12 @@ def regenerate_config(marathon, config_file, groups, bind_http_https,
                       ssl_certs, templater, haproxy_map):
     domain_map_array = []
     app_map_array = []
-    apps = get_apps(marathon)
+    apps, apps_id_label_list = get_apps(marathon, groups=groups)
     generated_config = config(apps, groups, bind_http_https, ssl_certs,
                               templater, haproxy_map, domain_map_array,
                               app_map_array, config_file)
 
-    download_certificates_from_vault(app_map_array, ssl_certs)
+    download_certificates_from_vault(apps_id_label_list, ssl_certs)
 
     (changed, config_valid) = compareWriteAndReloadConfig(
         generated_config, config_file, domain_map_array, app_map_array,
