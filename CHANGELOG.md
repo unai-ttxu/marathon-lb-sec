@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.4.0 (upcoming)
+## 0.5.0 (upcoming)
+
+* Pending changelog
+
+## 0.4.0-23cf848 (Built: June 03, 2019 | Pre-release)
 
 * [EOS-2395] New label in marathon-lb to specify certs location
 * Adapt repo to new versioning flow
