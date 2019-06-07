@@ -4,8 +4,9 @@
 
 * Pending changelog
 
-## 0.4.0-23cf848 (Built: June 03, 2019 | Pre-release)
+## 0.4.0-61990ac (Built: June 07, 2019 | Pre-release)
 
+* [EOS-2425] Error when logging app id of not found Vault cert 
 * [EOS-2395] New label in marathon-lb to specify certs location
 * Adapt repo to new versioning flow
 * [EOS-1819] Download certificates only of new deployed apps
