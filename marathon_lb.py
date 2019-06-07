@@ -1534,6 +1534,7 @@ def get_apps(marathon, apps=[], groups=None):
             if str(marathon_app.appId) == os.environ.get("MARATHON_APP_ID"):
                 continue
 
+            backs = []
             for service in list(marathon_app.services.values()):
                 if service.haproxy_groups:
                     if not has_group(groups, service.haproxy_groups):
@@ -1545,9 +1546,11 @@ def get_apps(marathon, apps=[], groups=None):
                     continue
 
                 if service.backends:
-                    app_label_dict = dict({'id': str(marathon_app.appId), 'backends': str(service.backends), 'labels': marathon_app.app['labels']})
-                    if app_label_dict not in apps_id_label_list:
-                        apps_id_label_list.append(app_label_dict)
+                    backs.append(str(service.backends))
+
+            app_label_dict = dict({'id': str(marathon_app.appId), 'backends': str(backs), 'labels': marathon_app.app['labels']})
+            if app_label_dict not in apps_id_label_list:
+                apps_id_label_list.append(app_label_dict)
 
     if not groups:
         return apps_list
@@ -1621,7 +1624,7 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
                     os.remove(os.path.join(ssl_certs, cert_vault_key + KEY_EXT))
                     logger.info("Downloaded certificate " + cert_vault_key + CERT_EXT)
                 else:
-                    logger.info("Does not exists certificate for " + list(app.keys())[0])
+                    logger.info("Does not exists certificate for " + app['id'])
 
     previous_app_list = app_map_array
 
