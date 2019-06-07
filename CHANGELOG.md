@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (June 03, 2019)
+## 0.4.0 (June 07, 2019)
 
 * [EOS-2425] Error when logging app id of not found Vault cert 
 * [EOS-2395] New label in marathon-lb to specify certs location
