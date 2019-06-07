@@ -2,6 +2,7 @@
 
 ## 0.4.0 (June 03, 2019)
 
+* [EOS-2425] Error when logging app id of not found Vault cert 
 * [EOS-2395] New label in marathon-lb to specify certs location
 * Adapt repo to new versioning flow
 * [EOS-1819] Download certificates only of new deployed apps
