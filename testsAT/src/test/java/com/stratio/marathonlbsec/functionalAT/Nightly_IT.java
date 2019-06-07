@@ -16,7 +16,7 @@ import com.stratio.qa.data.BrowsersDataProvider;
         "src/test/resources/features/functionalAT/030_Logs/01_MARATHONLB_1388_CentralizedLogs.feature",
         "src/test/resources/features/functionalAT/030_Logs/02_QATM_2113_Log_Haproxy_Wrapper_Debug.feature",
         "src/test/resources/features/functionalAT/030_Logs/03_QATM_2113_Vault_Renewal_Token.feature"
-}, format = "json:target/cucumber.json")
+}, plugin = "json:target/cucumber.json")
 public class Nightly_IT extends BaseTest {
 
     public Nightly_IT() {

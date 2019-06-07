@@ -8,13 +8,13 @@ import org.testng.annotations.Test;
 @CucumberOptions(features = {
         "src/test/resources/features/functionalAT/020_Certificates/01_MARATHONLB_1386_AppCertificate.feature",
         "src/test/resources/features/functionalAT/020_Certificates/02_MARATHONLB_1386_ClientCertificate.feature"
-},format = "json:target/cucumber.json")
+},plugin = "json:target/cucumber.json")
 public class QATM_1386_Certificates_IT extends BaseTest {
 
     public QATM_1386_Certificates_IT() {
     }
 
-    @Test(enabled = true, groups = {"certificates"})
+    @Test(enabled = true, groups = {"app_client_certificates"})
     public void QATM1386_Certificates() throws Exception {
         new CucumberRunner(this.getClass()).runCukes();
     }

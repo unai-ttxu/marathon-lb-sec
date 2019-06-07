@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 import org.testng.annotations.Factory;
 import com.stratio.qa.data.BrowsersDataProvider;
 
-@CucumberOptions(features = { "src/test/resources/features/functionalAT/099_Uninstall/purge.feature" },format = "json:target/cucumber.json")
+@CucumberOptions(features = { "src/test/resources/features/functionalAT/099_Uninstall/purge.feature" },plugin = "json:target/cucumber.json")
 public class Purge_IT extends BaseTest {
 
     public Purge_IT() {

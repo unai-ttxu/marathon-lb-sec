@@ -11,31 +11,28 @@ hose {
 
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
-                           'env':     ['DCOS_IP=10.200.0.156',
-                                      'SSL=true',
-				                      'SSH=true',
-                                      'TOKEN_AUTHENTICATION=true',
-                                      'DCOS_USER=admin',
-                                      'DCOS_PASSWORD=1234',
-                                      'CLI_BOOTSTRAP_USER=root',
-                                      'CLI_BOOTSTRAP_PASSWORD=stratio'
+                           'env':     ['DCOS_IP=\$DCOS_IP',
+                                       'SSL=true',
+                                       'SSH=true',
+                                       'TOKEN_AUTHENTICATION=true',
+                                       'DCOS_USER=\$DCOS_USER',
+                                       'DCOS_PASSWORD=\$DCOS_PASSWORD',
+                                       'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
+                                       'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOSTRAP_PASSWORD'
                                       ],
                            'sleep':  120,
-			   'healthcheck': 5000]]
+			                     'healthcheck': 5000]]
         ]
+
+    ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
     INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
-                    | -DBOOTSTRAP_IP=10.200.0.155
-		                | -DDCOS_IP=10.200.0.156
-		                | -DINSTALL_MARATHON=false
-                    | -DDCOS_CLI_HOST=%%DCOSCLI#0
-                    | -DSELENIUM_GRID=selenium391.cd:4444
-                    | -DFORCE_BROWSER=chrome_64%%JUID
-		                | """.stripMargin().stripIndent()
+                    | -DREMOTE_USER=\$PEM_VMWARE_USER
+                    | -DPEM_FILE_PATH=\$PEM_VMWARE_KEY
+                    | -DINSTALL_MARATHON=false
+                    | """.stripMargin().stripIndent()
                     
-
-
     DEV = { config ->
         doDocker(config)
     }
