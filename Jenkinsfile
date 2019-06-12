@@ -7,6 +7,7 @@ hose {
     PKGMODULESNAMES = ['marathon-lb-sec']
     BUILDTOOL = 'make'
     INSTALLTIMEOUT = 20
+    GENERATE_QA_ISSUE = true
 
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15',
