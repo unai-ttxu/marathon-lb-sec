@@ -16,7 +16,7 @@ Feature: Deploying marathon-lb-sec with client certificate
   Scenario:[02] Obtain marathon-lb node
     Then I wait '5' seconds
 
-#Deploying marathon with a clients certificate
+  #Deploying marathon with a clients certificate
   Scenario:[03] Deploying marathon-lb-sec with a clients certificate
     Given I run 'sudo cp /etc/hosts /tmp/hostbackup' locally
     And I run 'cat /etc/hosts | grep nginx-qa.labs.stratio.com || echo "!{publicHostIP} nginx-qa.labs.stratio.com" | sudo tee -a /etc/hosts' locally
@@ -40,6 +40,10 @@ Feature: Deploying marathon-lb-sec with client certificate
     Given I run 'dcos marathon app remove --force nginx-qa' in the ssh connection
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task | awk '{print $1}' | grep -c nginx-qa' contains '0'
     And I run 'sudo cp /tmp/hostbackup /etc/hosts' locally
+
+  Scenario:[04] Deleting files
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    And I run 'sudo rm -rf /stratio_volume/certs_client_marathonlb.list ; sudo rm -rf /stratio_volume/marathon-lb-cert-backup.json' in the ssh connection
 
 #Uninstalling marathon-lb-sec
 #  @include(feature:../purge.feature,scenario:marathon-lb-sec can be uninstalled using cli)

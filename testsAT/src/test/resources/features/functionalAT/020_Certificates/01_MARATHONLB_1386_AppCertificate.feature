@@ -16,13 +16,24 @@ Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
   Scenario:[02] Obtain marathon-lb node
     Then I wait '5' seconds
 
-#Deploying marathon with an app certificate
+  @runOnEnv(EOS_INSTALLER_VERSION<1.2.0)
+  Scenario:[02a] Preparing files
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    And I outbound copy 'src/test/resources/scripts/marathon-lb-app-certs.sh' through a ssh connection to '/tmp'
+    And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
+
+  @runOnEnv(EOS_INSTALLER_VERSION=1.2.0||EOS_INSTALLER_VERSION>1.2.0)
+  Scenario:[02b] Preparing files
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    And I run 'sudo touch /stratio_volume/certs.list' in the ssh connection
+    And I outbound copy 'src/test/resources/scripts/marathon-lb-app-certs.sh' through a ssh connection to '/tmp'
+    And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
+
+  #Deploying marathon with an app certificate
   Scenario:[03] Deploying marathon-lb-sec with an nginx certificate
     Given I run 'sudo cp /etc/hosts /tmp/hostbackup' locally
     And I run 'cat /etc/hosts | grep nginx-qa.labs.stratio.com || echo "!{publicHostIP} nginx-qa.labs.stratio.com" | sudo tee -a /etc/hosts' locally
     Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
-    And I outbound copy 'src/test/resources/scripts/marathon-lb-app-certs.sh' through a ssh connection to '/tmp'
-    And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
     And I run 'cd /tmp && sudo chmod +x marathon-lb-app-certs.sh' in the ssh connection
     And I run 'sudo mv /tmp/marathon-lb-app-certs.sh /stratio_volume/marathon-lb-app-certs.sh' in the ssh connection
     And I run 'sudo docker ps | grep eos-installer | awk '{print $1}'' in the ssh connection and save the value in environment variable 'containerId'
@@ -43,6 +54,16 @@ Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task | awk '{print $1}' | grep -c nginx-qa' contains '0'
     And in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 100 !{TaskID} 2>/dev/null | grep 'Deleted certificate nginx-qa.pem' | wc -l' contains '1'
     And I run 'sudo cp /tmp/hostbackup /etc/hosts' locally
+
+  @runOnEnv(EOS_INSTALLER_VERSION<1.2.0)
+  Scenario:[03] Deleting files
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    And I run 'sudo rm -rf /stratio_volume/certs_custom_app_marathonlb.list' in the ssh connection
+
+  @runOnEnv(EOS_INSTALLER_VERSION=1.2.0||EOS_INSTALLER_VERSION>1.2.0)
+  Scenario:[03] Deleting files
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    And I run 'sudo rm -rf /stratio_volume/certs.list ; sudo rm -rf /stratio_volume/certs_custom_app_marathonlb.list' in the ssh connection
 
 #  @include(feature:../purge.feature,scenario:[01] marathon-lb-sec can be uninstalled using cli)
 #  Scenario: Prueba borrado

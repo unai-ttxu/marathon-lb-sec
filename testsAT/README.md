@@ -44,7 +44,7 @@ These tests will be executed as part of the continuous integration flow as follo
     - SERVICE_MEM: Memory assigned to Marathon LB service (default: 1024)
     - SERVICE_DISK: Disk assigned to Marathon LB service (default: 1)
 - Usage example:
-    `mvn clean verify -Dgroups=installation_cct -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=pegaso -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
+    `mvn clean verify -Dgroups=installation_cct -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=<model> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
 
 ### Check Invalid App Certificates
 - Pre-requisites:
@@ -55,10 +55,12 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
     - DCOS_CLI_USER: dcos-cli docker user
     - DCOS_CLI_PASSWORD: dcos-cli docker password
+    - BOOTSTRAP_IP: IP from the bootstrap
     - REMOTE_USER: operational user for cluster machines
-    - PEM_FILE_PATH: local path to pem file for cluster machines           
+    - PEM_FILE_PATH: local path to pem file for cluster machines
+    - EOS_INSTALLER_VERSION: EOS version           
 - Usage example:
-    `mvn clean verify -Dgroups=checkInvalidAppCerts -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DlogLevel=DEBUG`
+    `mvn clean verify -Dgroups=checkInvalidAppCerts -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DlogLevel=DEBUG -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DEOS_INSTALLER_VERSION=<EOS_Version>`
 
 ### IPtables
 - Pre-requisites:
@@ -139,10 +141,11 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
     - DCOS_CLI_USER: dcos-cli docker user
     - DCOS_CLI_PASSWORD: dcos-cli docker password
+    - EOS_INSTALLER_VERSION: EOS version
 - Optional:
     - INSTALL_MARATHON (default: <not sent>)
 - Usage example: 
-    `mvn clean verify -Dgroups=app_client_certificates -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
+    `mvn clean verify -Dgroups=app_client_certificates -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DEOS_INSTALLER_VERSION=<EOS_Version> -DlogLevel=DEBUG`
 
 ### Invalid Certificates
 - Pre-requisites:
@@ -192,7 +195,6 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
     - DCOS_CLI_USER: dcos-cli docker user
     - DCOS_CLI_PASSWORD: dcos-cli docker password
-    - MLB_FLAVOUR: MarathonLB flavour to be installed
     - REMOTE_USER: operational user for cluster machines
     - PEM_FILE_PATH: local path to pem file for cluster machines           
 - Usage example:
@@ -212,11 +214,12 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_PASSWORD: dcos-cli docker password
     - MLB_FLAVOUR: MarathonLB flavour to be installed
     - REMOTE_USER: operational user for cluster machines
-    - PEM_FILE_PATH: local path to pem file for cluster machines           
+    - PEM_FILE_PATH: local path to pem file for cluster machines
+    - EOS_INSTALLER_VERSION: EOS version           
 - Optional:
     - INSTANCE: Marathon LB instance (default: marathonlb) 
     - SERVICE_CPU: CPU assigned to Marathon LB service (default: 2)
     - SERVICE_MEM: Memory assigned to Marathon LB service (default: 1024)
     - SERVICE_DISK: Disk assigned to Marathon LB service (default: 1)
 - Usage example:
-    `mvn clean verify -Dgroups=nightly -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=model -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DEOS_VAULT_PORT=8200 -DlogLevel=DEBUG`
+    `mvn clean verify -Dgroups=nightly -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=model -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DEOS_VAULT_PORT=8200 -DDEOS_INSTALLER_VERSION=<EOS Version> -DlogLevel=DEBUG`
