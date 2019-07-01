@@ -1548,8 +1548,8 @@ def get_apps(marathon, apps=[], groups=None):
                 if service.backends:
                     backs.append(str(service.backends))
 
-            app_label_dict = dict({'id': str(marathon_app.appId), 'backends': str(backs), 'labels': marathon_app.app['labels']})
-            if app_label_dict not in apps_id_label_list:
+            app_label_dict = dict({'id': str(marathon_app.appId), 'labels': marathon_app.app['labels']})
+            if (app_label_dict not in apps_id_label_list) and len(backs) > 0:
                 apps_id_label_list.append(app_label_dict)
 
     if not groups:
@@ -1609,7 +1609,7 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
 
         if app not in previous_app_list: 
             
-            if not os.path.isfile(os.path.join(ssl_certs, appid + CERT_EXT)):
+            if not os.path.isfile(os.path.join(ssl_certs, cert_vault_key + CERT_EXT)):
                 download_result = kms_utils.get_cert(CLUSTER, appid, cert_vault_key,
                                                      O_FORMAT, ssl_certs)
                 if download_result:
