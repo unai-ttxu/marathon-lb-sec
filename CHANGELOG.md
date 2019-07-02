@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (June 07, 2019)
+## 0.4.0 (July 02, 2019)
 
 * [EOS-2578] Fold all certifiates, keys and CAs to files with lines of length 64
 * [EOS-2579] Download certs only when an app's backends increase from 0 and the cert is not already present 
