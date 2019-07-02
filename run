@@ -141,6 +141,11 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   rm -f "$SSL_CERTS/$CONV_MARATHON_APP_ID.key"
   # Change the name to be the first alphabetical order certificate (SNI)
   mv "$SSL_CERTS/$CONV_MARATHON_APP_ID.pem" "$SSL_CERTS/$MARATHON_LB_CERT_NAME"
+  src_file_path=/marathon-lb/vault_certs/$MARATHON_LB_CERT_NAME.orig
+  dest_file_path=/marathon-lb/vault_certs/$MARATHON_LB_CERT_NAME
+  mv $dest_file_path $src_file_path
+  fold -w 64 $src_file_path > $dest_file_path
+  rm -f $src_file_path
   # Copy the certificate to make it available in the old default path
   cp "$SSL_CERTS/$MARATHON_LB_CERT_NAME" /etc/ssl/cert.pem
 	
@@ -150,6 +155,10 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   INFO "Downloading ca-bundle from vault..."
   getCAbundle /etc/ssl PEM
   INFO "Downloaded"
+  src_file_path=/etc/ssl/ca-bundle.pem.orig
+  dest_file_path=/etc/ssl/ca-bundle.pem
+  mv $dest_file_path $src_file_path
+  fold -w 64 $src_file_path > $dest_file_path
 
 elif [ -n "${HAPROXY_SSL_CERT-}" ]; then
   # if provided via environment variable, use it.

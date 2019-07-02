@@ -36,6 +36,7 @@ import sys
 import threading
 import time
 import datetime
+import textwrap
 from itertools import cycle
 from operator import attrgetter
 from shutil import move
@@ -1615,11 +1616,15 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
                 if download_result:
                     os.rename(os.path.join(ssl_certs, cert_vault_key + CERT_EXT), 
                               os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT))
-                    with open(os.path.join(ssl_certs, cert_vault_key + CERT_EXT), 'wb') as wfd:
+                    with open(os.path.join(ssl_certs, cert_vault_key + CERT_EXT), 'w') as wfd:
                         for f in [os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT),
                                   os.path.join(ssl_certs, cert_vault_key + KEY_EXT)]:
-                            with open(f,'rb') as fd:
-                                shutil.copyfileobj(fd, wfd, 1024*1024*10)
+                            with open(f,'r') as fd:
+                                for line in fd.readlines():
+                                    if len(line) > 64:
+                                        wfd.write('\n'.join(textwrap.wrap(line, 64)) + '\n')
+                                    else:
+                                        wfd.write(line)
                     os.remove(os.path.join(ssl_certs, cert_vault_key + CERT_EXT + BKP_EXT))
                     os.remove(os.path.join(ssl_certs, cert_vault_key + KEY_EXT))
                     logger.info("Downloaded certificate " + cert_vault_key + CERT_EXT)
