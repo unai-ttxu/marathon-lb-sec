@@ -6,6 +6,7 @@
 
 ## 0.4.0-61990ac (Built: June 07, 2019 | Pre-release)
 
+* [EOS-2578] Fold all certifiates, keys and CAs to files with lines of length 64
 * [EOS-2579] Download certs only when an app's backends increase from 0 and the cert is not already present 
 * [EOS-2425] Error when logging app id of not found Vault cert 
 * [EOS-2395] New label in marathon-lb to specify certs location
