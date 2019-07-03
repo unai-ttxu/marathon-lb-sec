@@ -4,6 +4,8 @@ hose {
     EMAIL = 'qa'
     DEVTIMEOUT = 20
     RELEASETIMEOUT = 20
+    MODULE = 'marathon-lb'
+    REPOSITORY = 'marathon-lb-sec'
     PKGMODULESNAMES = ['marathon-lb-sec']
     BUILDTOOL = 'make'
     NEW_VERSIONING = true

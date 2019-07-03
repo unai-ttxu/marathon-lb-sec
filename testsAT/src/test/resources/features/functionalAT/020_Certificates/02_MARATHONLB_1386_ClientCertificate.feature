@@ -43,7 +43,7 @@ Feature: Deploying marathon-lb-sec with client certificate
 
   Scenario:[04] Deleting files
     Then I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
-    And I run 'sudo rm -rf /stratio_volume/certs_client_marathonlb.list ; sudo rm -rf /stratio_volume/marathon-lb-cert-backup.json' in the ssh connection
+    And I run 'sudo rm -rf /stratio_volume/certs_client_marathonlb.list ; sudo rm -rf /stratio_volume/marathon-lb-cert-backup.json ; sudo rm -rf /stratio_volume/marathon-lb-manage-certs.sh' in the ssh connection
 
 #Uninstalling marathon-lb-sec
 #  @include(feature:../purge.feature,scenario:marathon-lb-sec can be uninstalled using cli)

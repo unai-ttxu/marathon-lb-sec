@@ -15,5 +15,13 @@ VAULT_TOKEN=$(grep -Po '"root_token":\s*"(\d*?,|.*?[^\\]")' /stratio_volume/vaul
 INTERNAL_DOMAIN=$(grep -Po '"internalDomain":\s"(\d*?,|.*?[^\\]")' /stratio_volume/descriptor.json | awk -F":" '{print $2}' | sed -e 's/^\s"//' -e 's/"$//')
 CONSUL_DATACENTER=$(grep -Po '"consulDatacenter":\s"(\d*?,|.*?[^\\]")' /stratio_volume/descriptor.json | awk -F":" '{print $2}' | sed -e 's/^\s"//' -e 's/"$//')
 
+PARAMS=""
+if [ -f "/stratio_volume/certificates_additional_data" ]; then
+    PASSWORD=$(awk -F '"' '/^pki_password/{print $2}' /stratio_volume/certificates_additional_data)
+    if [[ "$PASSWORD" ]]; then
+        PARAMS="-p $PASSWORD"
+    fi
+fi
+
 cd /stratio/*secret-utils/
-bash -e gencerts -l /stratio_volume/certs_custom_app_marathonlb.list -w -v vault.service.$INTERNAL_DOMAIN -o 8200 -t $VAULT_TOKEN -d $INTERNAL_DOMAIN -c $CONSUL_DATACENTER
+bash -e gencerts -l /stratio_volume/certs_custom_app_marathonlb.list -w -v vault.service.$INTERNAL_DOMAIN -o 8200 -t $VAULT_TOKEN -d $INTERNAL_DOMAIN -c $CONSUL_DATACENTER $PARAMS

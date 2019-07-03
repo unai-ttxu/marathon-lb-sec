@@ -41,14 +41,14 @@ Feature: Installation testing with marathon-lb-sec
   Scenario:[04] Check Marathon-lb has being installed correctly
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     And in less than '300' seconds, checking each '20' seconds, the command output 'dcos task | grep -w marathonlb. | wc -l' contains '1'
-    When I run 'dcos marathon task list marathonlb | awk '{print $5}' | grep marathonlb' in the ssh connection and save the value in environment variable 'marathonTaskId'
+    When I run 'dcos marathon task list | awk '{print $5}' | grep marathon.*lb.*' in the ssh connection and save the value in environment variable 'marathonTaskId'
     # DCOS dcos marathon task show check healtcheck status
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{marathonTaskId} | grep TASK_RUNNING | wc -l' contains '1'
     And in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{marathonTaskId} | grep '"alive": true' | wc -l' contains '1'
 
   Scenario:[05] Obtain node where marathon-lb-sec is running
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
-    When I run 'dcos task | grep marathonlb | awk '{print $2}'' in the ssh connection and save the value in environment variable 'publicHostIP'
+    When I run 'dcos task | grep marathon.*lb.* | awk '{print $2}'' in the ssh connection and save the value in environment variable 'publicHostIP'
 
   Scenario:[06] Make sure service is ready
     Given I send requests to '!{publicHostIP}:9090'
