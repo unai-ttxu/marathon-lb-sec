@@ -4,7 +4,7 @@
 
 * Pending changelog
 
-## 0.4.0-aa77ef6 (Built: July 02, 2019 | Pre-release)
+## 0.4.0-aa77ef6 (Built: July 02, 2019 | Released: July 04, 2019)
 
 * [EOS-2578] Fold all certifiates, keys and CAs to files with lines of length 64
 * [EOS-2579] Download certs only when an app's backends increase from 0 and the cert is not already present 
