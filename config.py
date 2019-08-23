@@ -36,7 +36,6 @@ class ConfigTemplater(object):
             ConfigTemplate(name='HEAD',
                            value='''\
 global
-  daemon
   log /dev/log local0
   log /dev/log local1 notice
   spread-checks 5
@@ -61,7 +60,7 @@ AES256-SHA256:!aNULL:!MD5:!DSS
   ssl-default-server-options no-sslv3 no-tlsv10 no-tls-tickets
   stats socket /var/run/haproxy/socket
   server-state-file global
-  server-state-base /var/state/haproxy/
+  server-state-base /var/state/haproxy/ expose-fd listeners
   lua-load /marathon-lb/health.lua
   lua-load /marathon-lb/getpids.lua
   lua-load /marathon-lb/getconfig.lua
@@ -87,6 +86,7 @@ listen stats
   bind 0.0.0.0:9090
   balance
   mode http
+  http-request use-service prometheus-exporter if { path /metrics }
   stats enable
   acl health path /_haproxy_health_check
   http-request use-service lua.health if health

@@ -2,7 +2,7 @@
 
 ## 0.5.0 (upcoming)
 
-* Pending changelog
+* [EOS-2879] Bump HAproxy to 2.0.5 and enable metrics endpoint
 
 ## 0.4.0-aa77ef6 (Built: July 02, 2019 | Released: July 04, 2019)
 

@@ -13,7 +13,6 @@ ADD http://sodio.stratio.com/repository/paas/log_utils/${SEC_UTILS_VERSION}/b-lo
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         inetutils-syslogd \
-        iptables \
         libcurl4 \
         liblua5.3-0 \
         libssl1.1 \
@@ -28,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get install -y rsyslog \
     && rm -rf /var/lib/apt/lists/*
 
-ENV TINI_VERSION=v0.13.2 \
+ENV TINI_VERSION=v0.16.1 \
     TINI_GPG_KEY=595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7
 RUN set -x \
     && apt-get update && apt-get install -y --no-install-recommends dirmngr gpg wget \
@@ -49,9 +48,9 @@ RUN set -x \
     && apt-get purge -y --auto-remove dirmngr gpg wget
 
 
-ENV HAPROXY_MAJOR=1.7 \
-    HAPROXY_VERSION=1.7.6 \
-    HAPROXY_MD5=8f4328cf66137f0dbf6901e065f603cc
+ENV HAPROXY_MAJOR=2.0 \
+    HAPROXY_VERSION=2.0.5 \
+    HAPROXY_MD5=497c716adf4b056484601a887f34d152
 
 COPY requirements.txt /marathon-lb/
 
@@ -84,7 +83,7 @@ RUN set -x \
     && tar -xzf haproxy.tar.gz -C /usr/src/haproxy --strip-components=1 \
     && rm haproxy.tar.gz \
     && make -C /usr/src/haproxy \
-        TARGET=linux2628 \
+        TARGET=linux-glibc \
         ARCH=x86_64 \
         USE_LUA=1 \
         LUA_INC=/usr/include/lua5.3/ \
@@ -94,6 +93,7 @@ RUN set -x \
         USE_REGPARM=1 \
         USE_STATIC_PCRE=1 \
         USE_ZLIB=1 \
+        EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o" \
         all \
         install-bin \
     && rm -rf /usr/src/haproxy \
