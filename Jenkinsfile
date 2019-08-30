@@ -47,8 +47,6 @@ hose {
 
     ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
-    INSTALLPARAMETERS = ""
-
     if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
         INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
