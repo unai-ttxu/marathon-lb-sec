@@ -44,7 +44,7 @@ hose {
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
 	       if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
-	           doAT(conf: config, environmentAuth: config.INSTALLPARAMETERS.HETZNER_CLUSTER) 
+	           doAT(conf: config, environmentAuth: config.INSTALLPARAMETERS['HETZNER_CLUSTER']) 
 	       } else {
 	           doAT(conf: config)
 	       }
