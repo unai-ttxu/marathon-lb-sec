@@ -12,7 +12,24 @@ hose {
     GENERATE_QA_ISSUE = true
     INSTALLTIMEOUT = 20
 
-    INSTALLSERVICES = [
+    INSTALLSERVICES = []
+    if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
+        INSTALLSERVICES = [
+            ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+                           'env':     ['DCOS_IP=\$DCOS_IP',
+                                       'SSL=true',
+                                       'SSH=true',
+                                       'TOKEN_AUTHENTICATION=true',
+                                       'DCOS_USER=\$DCOS_USER',
+                                       'DCOS_PASSWORD=\$DCOS_PASSWORD',
+                                       'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
+				       'PEM_FILE_PATH=\$PEM_FILE_PATH'
+                                      ],
+                           'sleep':  120,
+			                     'healthcheck': 5000]]
+        ]
+    } else {
+        INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
                            'env':     ['DCOS_IP=\$DCOS_IP',
                                        'SSL=true',
@@ -22,20 +39,30 @@ hose {
                                        'DCOS_PASSWORD=\$DCOS_PASSWORD',
                                        'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
                                        'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOSTRAP_PASSWORD'
-				       'PEM_FILE_PATH=\$PEM_VMWARE_KEY'
                                       ],
                            'sleep':  120,
-			                     'healthcheck': 5000]]
+                                             'healthcheck': 5000]]
         ]
+   }
 
     ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
-    INSTALLPARAMETERS = """
+    INSTALLPARAMETERS = ""
+
+    if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
+        INSTALLPARAMETERS = """
+                    | -DDCOS_CLI_HOST=%%DCOSCLI#0
+                    | -DREMOTE_USER=\$PEM_VMWARE_USER
+                    | -DINSTALL_MARATHON=false
+                    | """.stripMargin().stripIndent()
+    } else {
+        INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
                     | -DREMOTE_USER=\$PEM_VMWARE_USER
                     | -DPEM_FILE_PATH=\$PEM_VMWARE_KEY
                     | -DINSTALL_MARATHON=false
                     | """.stripMargin().stripIndent()
+    }
                     
     DEV = { config ->
         doDocker(config)
