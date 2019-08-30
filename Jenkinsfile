@@ -22,6 +22,7 @@ hose {
                                        'DCOS_PASSWORD=\$DCOS_PASSWORD',
                                        'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
                                        'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOSTRAP_PASSWORD'
+				       'PEM_FILE_PATH=\$PEM_VMWARE_KEY'
                                       ],
                            'sleep':  120,
 			                     'healthcheck': 5000]]
