@@ -43,9 +43,17 @@ hose {
     INSTALL = { config ->
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
-	       doAT(conf: config)
+	       if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
+	           doAT(conf: config, environmentAuth: config.INSTALLPARAMETERS.HETZNER_CLUSTER) 
+	       } else {
+	           doAT(conf: config)
+	       }
        } else {
-           doAT(conf: config, groups: ['nightly'])
+	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
+                   doAT(conf: config, groups: ['nightly'], environmentAuth: config.INSTALLPARAMETERS.HETZNER_CLUSTER)   
+           } else {
+                   doAT(conf: config, groups: ['nightly'])
+	   }
          }
      }
 
