@@ -45,7 +45,7 @@ hose {
 
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
-	       if (INSTALLPARAMSMAP.contains('HETZNER_CLUSTER')) {
+	       if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
 	           doAT(conf: config, environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER']) 
 	       } else {
 	           doAT(conf: config)
@@ -53,7 +53,7 @@ hose {
        } else {
            echo "INSTALLPARAMETERS: ${config.INSTALLPARAMETERS}" 
 	   echo "INSTALLPARAMSMAP: ${INSTALLPARAMSMAP}"
-	   if (INSTALLPARAMSMAP.contains('HETZNER_CLUSTER')) {
+	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
 		   echo "HETZNER_CLUSTER available"
                    doAT(conf: config, groups: ['nightly'], environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER'])   
            } else {
