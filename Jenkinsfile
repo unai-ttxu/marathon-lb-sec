@@ -51,6 +51,7 @@ hose {
 	           doAT(conf: config)
 	       }
        } else {
+           echo "INSTALLPARAMETERS: ${config.INSTALLPARAMETERS}" 
 	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
                    doAT(conf: config, groups: ['nightly'], environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER'])   
            } else {
