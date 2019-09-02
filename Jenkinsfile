@@ -41,16 +41,18 @@ hose {
     }
 
     INSTALL = { config ->
+       def INSTALLPARAMSMAP = stringToMap(config.INSTALLPARAMETERS)
+
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
 	       if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
-	           doAT(conf: config, environmentAuth: config.INSTALLPARAMETERS['HETZNER_CLUSTER']) 
+	           doAT(conf: config, environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER']) 
 	       } else {
 	           doAT(conf: config)
 	       }
        } else {
 	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
-                   doAT(conf: config, groups: ['nightly'], environmentAuth: config.INSTALLPARAMETERS['HETZNER_CLUSTER'])   
+                   doAT(conf: config, groups: ['nightly'], environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER'])   
            } else {
                    doAT(conf: config, groups: ['nightly'])
 	   }
