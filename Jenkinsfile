@@ -14,6 +14,9 @@ hose {
 
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+			   'volumes': [
+				'\$PEM_FILE_PATH:/tmp/key.pem
+			   ]
                            'env':     ['DCOS_IP=\$DCOS_IP',
                                        'SSL=true',
                                        'SSH=true',
@@ -21,7 +24,7 @@ hose {
                                        'DCOS_USER=\$DCOS_USER',
                                        'DCOS_PASSWORD=\$DCOS_PASSWORD',
                                        'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
-				       'PEM_FILE_PATH=\$PEM_FILE_PATH'
+				       'PEM_FILE_PATH=/tmp/key.pem'
                                       ],
                            'sleep':  120,
 			                     'healthcheck': 5000]]
@@ -51,15 +54,10 @@ hose {
 	           doAT(conf: config)
 	       }
        } else {
-           echo "INSTALLPARAMETERS: ${config.INSTALLPARAMETERS}" 
-	   echo "INSTALLPARAMSMAP: ${INSTALLPARAMSMAP}"
-	   echo "ENVIRONMENTMAP: ${ENVIRONMENTMAP}"
 	   echo "PARAMSENVIRONMENT: ${params.ENVIRONMENT}"
 	   if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
-		   echo "HETZNER_CLUSTER available: ${PARAMSMAP['HETZNER_CLUSTER']}"
                    doAT(conf: config, groups: ['nightly'], environmentAuth: PARAMSMAP['HETZNER_CLUSTER'])   
            } else {
-		   echo "HETZNER_CLUSTER NOT available"
                    doAT(conf: config, groups: ['nightly'])
 	   }
          }
