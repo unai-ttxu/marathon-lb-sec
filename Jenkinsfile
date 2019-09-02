@@ -52,6 +52,7 @@ hose {
 	       }
        } else {
            echo "INSTALLPARAMETERS: ${config.INSTALLPARAMETERS}" 
+	   echo "INSTALLPARAMSMAP: ${INSTALLPARAMSMAP}"
 	   if (INSTALLPARAMSMAP.contains('HETZNER_CLUSTER')) {
 		   echo "HETZNER_CLUSTER available"
                    doAT(conf: config, groups: ['nightly'], environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER'])   
