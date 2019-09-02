@@ -40,7 +40,7 @@ hose {
         doDocker(config)
     }
 
-    INSTALL = { config ->
+    INSTALL = { config, params ->
        def INSTALLPARAMSMAP = stringToMap(config.INSTALLPARAMETERS)
 
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
