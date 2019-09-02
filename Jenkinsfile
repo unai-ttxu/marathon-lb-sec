@@ -32,7 +32,7 @@ hose {
     INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
                     | -DREMOTE_USER=\$PEM_VMWARE_USER
-                    | -DPEM_FILE_PATH=\$PEM_VMWARE_KEY
+                    | -DPEM_FILE_PATH=\$PEM_FILE_PATH
                     | -DINSTALL_MARATHON=false
                     | """.stripMargin().stripIndent()
                     
