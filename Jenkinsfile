@@ -50,7 +50,7 @@ hose {
 	       }
        } else {
 	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
-                   doAT(conf: config, groups: ['nightly'], environmentAuth: config.INSTALLPARAMETERS.HETZNER_CLUSTER)   
+                   doAT(conf: config, groups: ['nightly'], environmentAuth: config.INSTALLPARAMETERS['HETZNER_CLUSTER'])   
            } else {
                    doAT(conf: config, groups: ['nightly'])
 	   }
