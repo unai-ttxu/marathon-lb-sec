@@ -41,12 +41,12 @@ hose {
     }
 
     INSTALL = { config, params ->
-       def INSTALLPARAMSMAP = stringToMap(config.INSTALLPARAMETERS)
+       def PARAMSMAP = stringToMap(params.ENVIRONMENT)
 
        if (config.INSTALLPARAMETERS.contains('GROUPS_MARATHONLB')) {
            config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_MARATHONLB', '-Dgroups')
-	       if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
-	           doAT(conf: config, environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER']) 
+	       if (PARAMSMAP.contains('HETZNER_CLUSTER')) {
+	           doAT(conf: config, environmentAuth: PARAMSMAP['HETZNER_CLUSTER']) 
 	       } else {
 	           doAT(conf: config)
 	       }
@@ -55,12 +55,9 @@ hose {
 	   echo "INSTALLPARAMSMAP: ${INSTALLPARAMSMAP}"
 	   echo "ENVIRONMENTMAP: ${ENVIRONMENTMAP}"
 	   echo "PARAMSENVIRONMENT: ${params.ENVIRONMENT}"
-	   if (config.INSTALLPARAMETERS.contains('HETZNER_CLUSTER')) {
+	   if (PARAMSMAP.contains('HETZNER_CLUSTER')) {
 		   echo "HETZNER_CLUSTER available: ${INSTALLPARAMSMAP['HETZNER_CLUSTER']}"
-		   if (INSTALLPARAMSMAP['HETZNER_CLUSTER'] == 'india') {
-			echo "THIS IS INDIA"
-		   }
-                   doAT(conf: config, groups: ['nightly'], environmentAuth: INSTALLPARAMSMAP['HETZNER_CLUSTER'])   
+                   doAT(conf: config, groups: ['nightly'], environmentAuth: PARAMSMAP['HETZNER_CLUSTER'])   
            } else {
 		   echo "HETZNER_CLUSTER NOT available"
                    doAT(conf: config, groups: ['nightly'])
