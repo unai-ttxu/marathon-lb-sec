@@ -56,7 +56,7 @@ hose {
 	   echo "ENVIRONMENTMAP: ${ENVIRONMENTMAP}"
 	   echo "PARAMSENVIRONMENT: ${params.ENVIRONMENT}"
 	   if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
-		   echo "HETZNER_CLUSTER available"
+		   echo "HETZNER_CLUSTER available: ${PARAMSMAP['HETZNER_CLUSTER']}"
                    doAT(conf: config, groups: ['nightly'], environmentAuth: PARAMSMAP['HETZNER_CLUSTER'])   
            } else {
 		   echo "HETZNER_CLUSTER NOT available"
