@@ -16,7 +16,7 @@ hose {
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
 			   'volumes': [
 				'\$PEM_FILE_PATH:/tmp/key.pem'
-			   ]
+			   ],
                            'env':     ['DCOS_IP=\$DCOS_IP',
                                        'SSL=true',
                                        'SSH=true',
