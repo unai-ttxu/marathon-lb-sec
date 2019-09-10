@@ -6,7 +6,7 @@ import cucumber.api.CucumberOptions;
 import org.testng.annotations.Test;
 
 @CucumberOptions(features = {
-        "src/test/resources/features/functionalAT/010_Installation/CCT_Installation_IT.feature"
+        "src/test/resources/features/functionalAT/010_Installation/001_installationCCT_IT.feature"
 },plugin = "json:target/cucumber.json")
 
 public class Installation_CCT_IT extends BaseTest {

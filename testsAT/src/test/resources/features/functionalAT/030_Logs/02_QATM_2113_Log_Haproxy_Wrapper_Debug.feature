@@ -1,4 +1,5 @@
 @rest
+@mandatory(DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
 Feature:[QATM-2113] Haproxy Wrapper logging debug
 
   Scenario:[01] Check marathon-lb logs

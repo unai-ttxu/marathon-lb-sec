@@ -1,17 +1,17 @@
 @rest
+@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD,EOS_VAULT_PORT)
 Feature: [QATM-2113] Vault Renewal Token
 
-  Scenario:[01] Obtain info from bootstrap
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+  Background:[Setup] Obtain info from bootstrap
+    Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     Then I obtain basic information from bootstrap
 
-  Scenario:[02] Check marathon-lb logs
+  Scenario:[01] Check marathon-lb logs
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
-    And I run 'dcos task | grep marathonlb | tail -1 | awk '{print $5}'' in the ssh connection and save the value in environment variable 'TaskID'
+    And I run 'dcos task | grep marathon.*lb.* | tail -1 | awk '{print $5}'' in the ssh connection and save the value in environment variable 'TaskID'
     When in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 10 !{TaskID} 2>/dev/null' contains 'INFO - 0 python marathon-lb.token_renewal.py {"@message": "Checking if token needs renewal"}'
 
-  Scenario:[03] Change token period and check renewal
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+  Scenario:[02] Change token period and check renewal
     When I run 'sudo docker exec -it paas-bootstrap curl -k -H "X-Vault-Token:!{VAULT_TOKEN}" https://!{EOS_VAULT_HOST}:${EOS_VAULT_PORT}/v1/auth/approle/role/open -k -XPOST -d '{"period": 60}' | jq .' in the ssh connection
     And I wait '5' seconds
     Then in less than '300' seconds, checking each '10' seconds, the command output 'sudo docker exec -it paas-bootstrap curl -k -s -XGET -H 'X-Vault-Token:!{VAULT_TOKEN}' https://!{EOS_VAULT_HOST}:${EOS_VAULT_PORT}/v1/auth/approle/role/open | jq -rMc .data.period' contains '60'
@@ -19,7 +19,7 @@ Feature: [QATM-2113] Vault Renewal Token
     And I wait '5' seconds
     Then in less than '300' seconds, checking each '10' seconds, the command output 'sudo docker exec -it paas-bootstrap curl -k -s -XGET -H 'X-Vault-Token:!{VAULT_TOKEN}' https://!{EOS_VAULT_HOST}:${EOS_VAULT_PORT}/v1/auth/approle/role/open | jq -rMc .data.period' contains '600'
 
-  Scenario:[04] Check marathon-lb logs
+  Scenario:[03] Check marathon-lb logs
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
-    And I run 'dcos task | grep marathonlb | tail -1 | awk '{print $5}'' in the ssh connection and save the value in environment variable 'TaskID'
+    And I run 'dcos task | grep marathon.*lb.* | tail -1 | awk '{print $5}'' in the ssh connection and save the value in environment variable 'TaskID'
     When in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 10 !{TaskID} 2>/dev/null' contains 'INFO - 0 python marathon-lb.token_renewal.py {"@message": "Checking if token needs renewal"}'

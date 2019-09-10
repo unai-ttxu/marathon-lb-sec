@@ -1,0 +1,10 @@
+frontend marathon_https_in
+  bind *:443 ssl crt /marathon-lb/vault_certs/
+  mode http
+  acl path_nginx-qa-testqa3_10105 path_beg testqa3
+  use_backend nginx-qa-testqa3_10105 if { ssl_fc_sni nginx-qa.labs.stratio.com } path_nginx-qa-testqa3_10105
+  acl path_nginx-qa-testqa2_10104 path_beg testqa2
+  use_backend nginx-qa-testqa2_10104 if { ssl_fc_sni nginx-qa.labs.stratio.com } path_nginx-qa-testqa2_10104
+  acl path_nginx-qa-testqa1_10102 path_beg testqa1
+  use_backend nginx-qa-testqa1_10102 if { ssl_fc_sni nginx-qa.labs.stratio.com } path_nginx-qa-testqa1_10102
+  use_backend %[ssl_fc_sni,lower,map(/marathon-lb/domain2backend.map)]

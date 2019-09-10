@@ -2,7 +2,7 @@
 Feature: Marathon-lb not able to run without valid certificates in Vault
 
   Scenario: [01] Delete valid marathon-lb certificate in vcli
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Given I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     Then I outbound copy 'src/test/resources/scripts/marathon-lb-invalid-certs.sh' through a ssh connection to '/tmp'
     And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
     And I run 'cd /tmp && sudo chmod +x marathon-lb-invalid-certs.sh' in the ssh connection
@@ -27,7 +27,7 @@ Feature: Marathon-lb not able to run without valid certificates in Vault
     And in less than '300' seconds, checking each '20' seconds, the command output 'dcos task | grep -w marathonlb. | wc -l' contains '0'
 
   Scenario: Restore Certificates for Marathon-lb-sec
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Given I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     Then I outbound copy 'src/test/resources/scripts/marathon-lb-restore-certs.sh' through a ssh connection to '/tmp'
     And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
     And I run 'cd /tmp && sudo chmod +x marathon-lb-restore-certs.sh' in the ssh connection

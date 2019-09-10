@@ -1,0 +1,13 @@
+frontend marathon_http_in
+  bind *:80
+  mode http
+  acl host_nginx-qa_labs_stratio_com_nginx-qa-testqa3 hdr(host) -i nginx-qa.labs.stratio.com
+  acl path_nginx-qa-testqa3_10105 path_beg testqa3
+  use_backend nginx-qa-testqa3_10105 if host_nginx-qa_labs_stratio_com_nginx-qa-testqa3 path_nginx-qa-testqa3_10105
+  acl host_nginx-qa_labs_stratio_com_nginx-qa-testqa2 hdr(host) -i nginx-qa.labs.stratio.com
+  acl path_nginx-qa-testqa2_10104 path_beg testqa2
+  use_backend nginx-qa-testqa2_10104 if host_nginx-qa_labs_stratio_com_nginx-qa-testqa2 path_nginx-qa-testqa2_10104
+  acl host_nginx-qa_labs_stratio_com_nginx-qa-testqa1 hdr(host) -i nginx-qa.labs.stratio.com
+  acl path_nginx-qa-testqa1_10102 path_beg testqa1
+  use_backend nginx-qa-testqa1_10102 if host_nginx-qa_labs_stratio_com_nginx-qa-testqa1 path_nginx-qa-testqa1_10102
+  use_backend %[req.hdr(host),lower,regsub(:.*$,,),map(/marathon-lb/domain2backend.map)]

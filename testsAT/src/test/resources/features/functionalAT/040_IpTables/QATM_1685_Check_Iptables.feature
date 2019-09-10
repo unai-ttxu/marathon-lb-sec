@@ -1,4 +1,5 @@
 @rest
+@mandatory(DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD,BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_IP,DCOS_TENANT,DCOS_PASSWORD)
 Feature: Check iptables in the node to avoid conflicts with Marathon-lb calico and minuteman
 
   Scenario:[01] Obtain node where marathon-lb-sec is running
@@ -6,7 +7,7 @@ Feature: Check iptables in the node to avoid conflicts with Marathon-lb calico a
     When I run 'dcos task | grep marathonlb | awk '{print $2}'' in the ssh connection and save the value in environment variable 'publicHostIP'
 
   Scenario:[02] Check iptables Marathon-lb, Calico y Minuteman
-    Given I open a ssh connection to '!{publicHostIP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Given I open a ssh connection to '!{publicHostIP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I run 'iptables -L | tail -10' in the ssh connection and save the value in environment variable 'iptablesInicial'
     And I outbound copy 'src/test/resources/scripts/iptables.sh' through a ssh connection to '/tmp'
     And I run 'chmod +x /tmp/iptables.sh' in the ssh connection

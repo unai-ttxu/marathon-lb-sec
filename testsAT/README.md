@@ -37,12 +37,15 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_PASSWORD: dcos-cli docker password
     - MLB_FLAVOUR: MarathonLB flavour to be installed
     - REMOTE_USER: operational user for cluster machines
-    - PEM_FILE_PATH: local path to pem file for cluster machines           
+    - PEM_FILE_PATH: local path to pem file for cluster machines
+    - UNIVERSE_MARATHONLB_VERSION: universe version
+    - DCOS_TENANT: cluster tenant 
 - Optional:
     - INSTANCE: Marathon LB instance (default: marathonlb) 
     - SERVICE_CPU: CPU assigned to Marathon LB service (default: 2)
     - SERVICE_MEM: Memory assigned to Marathon LB service (default: 1024)
     - SERVICE_DISK: Disk assigned to Marathon LB service (default: 1)
+    - EOS_NEW_SSH_PORT: SSH port to connect with any cluster node (default: 22)
 - Usage example:
     `mvn clean verify -Dgroups=installation_cct -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=<model> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
 

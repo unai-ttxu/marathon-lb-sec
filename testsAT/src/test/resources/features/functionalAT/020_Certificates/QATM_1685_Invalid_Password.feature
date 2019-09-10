@@ -2,7 +2,7 @@
 Feature: Marathon-lb not able to run without valid password in Vault for Marathon - mesos and rest
 
   Scenario:[01] Delete valid marathon password in vcli
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Given I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     Then I outbound copy 'src/test/resources/scripts/marathon-lb-invalid-password.sh' through a ssh connection to '/tmp'
     And I run 'cd /tmp && sudo chmod +x marathon-lb-invalid-password.sh' in the ssh connection
     And I run 'sudo mv /tmp/marathon-lb-invalid-password.sh /stratio_volume/marathon-lb-invalid-password.sh' in the ssh connection
@@ -26,7 +26,7 @@ Feature: Marathon-lb not able to run without valid password in Vault for Maratho
     And in less than '300' seconds, checking each '20' seconds, the command output 'dcos task | grep -w marathonlb. | wc -l' contains '0'
 
   Scenario: Restore Password for Marathon - mesos and rest
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Given I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     Then I outbound copy 'src/test/resources/scripts/marathon-lb-restore-password.sh' through a ssh connection to '/tmp'
     And I run 'cd /tmp && sudo chmod +x marathon-lb-restore-password.sh' in the ssh connection
     And I run 'sudo mv /tmp/marathon-lb-restore-password.sh /stratio_volume/marathon-lb-restore-password.sh' in the ssh connection

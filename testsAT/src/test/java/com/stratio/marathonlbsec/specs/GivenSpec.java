@@ -15,10 +15,20 @@
  */
 package com.stratio.marathonlbsec.specs;
 
+import com.stratio.qa.utils.ThreadProperty;
+import cucumber.api.java.en.Given;
+
 public class GivenSpec extends BaseSpec {
    
     public GivenSpec(Common spec) {
 	this.commonspec = spec;
     }
-      
+
+    @Given("^I set variables to login in custom tenant$")
+    public void setTenantVariables() throws Exception {
+        String dcosUser = System.getProperty("DCOS_TENANT_USER") != null ? System.getProperty("DCOS_TENANT_USER") : ThreadProperty.get("DCOS_USER");
+        String dcosPassword = System.getProperty("DCOS_TENANT_PASSWORD") != null ? System.getProperty("DCOS_TENANT_PASSWORD") : System.getProperty("DCOS_PASSWORD");;
+        ThreadProperty.set("DCOS_TENANT_USER", dcosUser);
+        ThreadProperty.set("DCOS_TENANT_PASSWORD", dcosPassword);
+    }
 }
