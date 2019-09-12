@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.1 (upcoming)
+## 0.4.1 (September 12, 2019)
 
 * [EOS-2913] Replace healthchecking lua mechanism
 
