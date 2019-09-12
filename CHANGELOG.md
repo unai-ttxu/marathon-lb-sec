@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 (upcoming)
+
+* [EOS-2913] Replace healthchecking lua mechanism
+
 ## 0.4.0 (July 02, 2019)
 
 * [EOS-2578] Fold all certifiates, keys and CAs to files with lines of length 64

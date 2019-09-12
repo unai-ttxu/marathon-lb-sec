@@ -1,7 +1,6 @@
 function check_token()
 
-  local vault_host = "VAULT_HOSTS=" .. os.capture("env | grep STRING_VAULT_HOST | cut -d '=' -f 2 | cut -d ',' -f 1")
-  local is_ok = os.execute("bash -c \"source /usr/sbin/kms_utils.sh && " .. vault_host .. " token_info > /dev/null 2>&1 \"")
+  local is_ok = os.execute("bash -c \"if [[ $(expr $(cat /marathon-lb/token-status) - $(date +\"%s\")) -lt 0 ]] ; then (exit 1) ; else (exit 0) ; fi > /dev/null 2>&1 \"")
 
   if is_ok==true then
         return 200
