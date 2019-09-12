@@ -54,8 +54,8 @@ def check_token_needs_renewal(force):
   
   #Convert time as given from Vault to epoch time
   expire_time_vault = jsonInfo['data']['expire_time']
-  expire_time_string = expire_time_vault.split('T')[0] + ' ' + expire_time_vault.split('T')[1].split('.')[0]
-  expire_time_tuple = time.strptime(expire_time_string, '%Y-%m-%d %H:%M:%S')
+  expire_time_index = expire_time_vault.index('.')
+  expire_time_tuple = time.strptime(expire_time_vault[:expire_time_index], '%Y-%m-%dT%H:%M:%S')
   expire_time = time.mktime(expire_time_tuple)
 
   ttl = jsonInfo['data']['ttl']
@@ -110,9 +110,9 @@ def exec_with_kms_utils(variables, command, extra_command):
   
   try:
     resp,_ = proc.communicate(timeout=10)
-  except TimeoutExpired:
+  except subprocess.TimeoutExpired as e:
     proc.kill()
-    resp,_ = proc.communicate()
+    raise e
 
   return resp, proc.returncode
 

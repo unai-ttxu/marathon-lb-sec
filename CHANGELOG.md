@@ -2,6 +2,7 @@
 
 ## 0.4.1 (September 12, 2019)
 
+* Improve exception handling and logging
 * [EOS-2913] Replace healthchecking lua mechanism
 
 ## 0.4.0 (July 02, 2019)
