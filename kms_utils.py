@@ -49,14 +49,13 @@ def get_token_info():
   return jsonValue
 
 def check_token_needs_renewal(force):
-  renewal = True
   jsonInfo = get_token_info()
   creationTime = jsonInfo['data']['creation_time']
   
   #Convert time as given from Vault to epoch time
   expire_time_vault = jsonInfo['data']['expire_time']
-  expire_time_string = expire_time_vault.split('T')[0] + ' ' + expire_time_vault.split('T')[1].split('.')[0]
-  expire_time_tuple = time.strptime(expire_time_string, '%Y-%m-%d %H:%M:%S')
+  expire_time_index = expire_time_vault.index('.')
+  expire_time_tuple = time.strptime(expire_time_vault[:expire_time_index], '%Y-%m-%dT%H:%M:%S')
   expire_time = time.mktime(expire_time_tuple)
 
   ttl = jsonInfo['data']['ttl']
@@ -74,18 +73,25 @@ def check_token_needs_renewal(force):
   logger.debug('Checked token expiration: percentage -> ' + str(percentage))
   
   if (percentage <= MIN_PERCENTAGE_EXPIRATION and percentage > 0):
-    logger.info('Token about to expire... need renewal')
-    renewal_token()
+    logger.info('Token about to expire... needs renewal')
+    jsonInfo = renewal_token()
+    lease_duration_vault = jsonInfo['auth']['lease_duration']
+    expire_time = int(time.time()) + int(lease_duration_vault)
+
   elif (percentage <= 0):
-    logger.info('Token expired... need renewal')
-    renewal_token()
+    logger.info('Token expired!!')
+    return False
   elif force:
     logger.info('Forced renewal')
-    renewal_token()
-  else:
-    renewal = False
+    jsonInfo = renewal_token()
+    lease_duration_vault = jsonInfo['auth']['lease_duration']
+    expire_time = int(time.time()) + int(lease_duration_vault)
 
-  return renewal
+  #Write expire_time to file
+  with open('/marathon-lb/token-status', 'w') as fd:
+    fd.write(str(int(expire_time)))
+
+  return True
 
 def renewal_token():
   variables = ''.join(['export VAULT_TOKEN=', vault_token, ';'])
@@ -94,17 +100,19 @@ def renewal_token():
   respArr = resp.decode("utf-8").split(',')
   jsonValue = json.loads(','.join(respArr[1:]))
   logger.debug('status ' + respArr[0])
-  logger.debug(jsonValue) 
+  logger.debug(jsonValue)
+
+  return jsonValue
 
 def exec_with_kms_utils(variables, command, extra_command):
   logger.debug('>>> exec_with_kms_utils: [COMM:'+command+', VARS:'+variables+', EXTRA_COMM:'+extra_command+']')
   proc = subprocess.Popen(['bash', '-c', head_vault_hosts + variables + source_kms_utils + command + ';' + extra_command], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   
   try:
-    resp,_ = proc.communicate(timeout=120)
-  except TimeoutExpired:
+    resp,_ = proc.communicate(timeout=10)
+  except subprocess.TimeoutExpired as e:
     proc.kill()
-    resp,_ = proc.communicate()
+    raise e
 
   return resp, proc.returncode
 

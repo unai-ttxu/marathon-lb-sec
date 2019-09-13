@@ -1568,7 +1568,6 @@ def download_certificates_from_vault(app_map_array, ssl_certs):
     global previous_app_list
 
     logger.debug("Checking Vault token expiration")
-    kms_utils.check_token_needs_renewal(False)    
     # app_map_array= [{'id': '/eos/nginx',
     #'backends': "{MarathonBackend('192.168.121.67', '192.168.121.67', 31558)}",
     # 'labels': {'HAPROXY_GROUP': 'external', 'HAPROXY_0_VHOST': 'service.mesosphere.com'}}"}]
