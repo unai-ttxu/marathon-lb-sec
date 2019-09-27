@@ -125,7 +125,7 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   
   INFO "Trying to download certificate from /userland/certificates/${CONV_MARATHON_APP_ID}"
   set +e
-  getCert userland "${CONV_MARATHON_APP_ID}" "${CONV_MARATHON_APP_ID}" PEM "${SSL_CERTS}"
+  getCert userland "${CONV_MARATHON_APP_ID}" "${CONV_MARATHON_APP_ID}" PEM "${SSL_CERTS}" 2>&1
   if [ $? -ne 0 ]
   then
      set -e
@@ -148,7 +148,7 @@ if [ ${VAULT_ENABLED} -eq 1 ]; then
   rm -f $src_file_path
   # Copy the certificate to make it available in the old default path
   cp "$SSL_CERTS/$MARATHON_LB_CERT_NAME" /etc/ssl/cert.pem
-	
+  
   SSL_CERTS="$SSL_CERTS/"
   INFO "Downloaded"
   
