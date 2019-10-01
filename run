@@ -64,7 +64,7 @@ if [ -n "${HAPROXY_SYSLOGD-}" ]; then
     cp /marathon-lb/syslogd/run "$SYSLOGD_SERVICE/"
 fi
 
-if [ -n "${HAPROXY_RSYSLOG-}" ]; then
+if [ "${HAPROXY_RSYSLOG:-true}" = true ]; then
     RSYSLOG_SERVICE="/marathon-lb/service/rsyslog"
     mkdir -p $RSYSLOG_SERVICE
     cp /marathon-lb/rsyslog/run "$RSYSLOG_SERVICE/"
