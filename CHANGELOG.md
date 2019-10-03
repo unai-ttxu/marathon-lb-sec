@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.5.0 (upcoming)
+## 0.6.0 (upcoming)
+
+* Pending changelog
+
+## 0.5.0-96093b8 (Built: October 03, 2019 | Pre-release)
 
 * [EOS-2970] Treat HAPROXY_RSYSLOG as a boolean parameter
 * [EOS-2939] Update error message for Marathon-LB default certificate
