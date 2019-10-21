@@ -6,6 +6,7 @@
 
 ## 0.5.0-96093b8 (Built: October 03, 2019 | Pre-release)
 
+* [EOS-3031] Bump kms_utils to version 0.4.6
 * [EOS-2970] Treat HAPROXY_RSYSLOG as a boolean parameter
 * [EOS-2939] Update error message for Marathon-LB default certificate
 * Improve exception handling and logging
