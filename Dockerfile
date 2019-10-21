@@ -3,7 +3,7 @@ FROM debian:buster
 ARG VERSION
 
 # artifacts versions
-ARG SEC_UTILS_VERSION=0.4.1
+ARG SEC_UTILS_VERSION=0.4.6
 
 # nexus repository artifacts
 ADD http://sodio.stratio.com/repository/paas/kms_utils/${SEC_UTILS_VERSION}/kms_utils-${SEC_UTILS_VERSION}.sh /usr/sbin/kms_utils.sh
