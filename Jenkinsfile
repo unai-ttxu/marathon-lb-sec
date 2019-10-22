@@ -24,7 +24,7 @@ hose {
                                        'DCOS_USER=\$DCOS_USER',
                                        'DCOS_PASSWORD=\$DCOS_PASSWORD',
                                        'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
-				       'PEM_PATH=/tmp/${REMOTE_USER}_rsa'
+				       'PEM_PATH=/tmp/\${CLI_BOOTSTRAP_USER}_rsa'
                                       ],
                            'sleep':  120,
 			                     'healthcheck': 5000]]
