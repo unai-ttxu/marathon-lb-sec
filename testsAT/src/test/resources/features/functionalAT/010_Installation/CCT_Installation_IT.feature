@@ -3,6 +3,7 @@ Feature: [QATM-1870] Service_Installation
 
   Scenario:[01] Obtain info from bootstrap
     Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
+    Then I run 'ls -al' in the ssh connection
     Then I obtain basic information from bootstrap
 
   Scenario:[02] Marathon-LB Simple Installation - Deploy service
