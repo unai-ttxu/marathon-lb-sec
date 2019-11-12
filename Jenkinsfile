@@ -38,25 +38,25 @@ hose {
                         ],
                         'sleep':  120,
                         'healthcheck': 5000
-                      ]
-          ],
-          [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
-                     'volumes': [
-                       '\$PEM_FILE_DIR:/tmp'
-                     ],
-                     'env':  [ 'DCOS_IP=\$DCOS_IP',
-                       'SSL=true',
-                       'SSH=true',
-                       'TOKEN_AUTHENTICATION=true',
-                       'DCOS_USER=\$DCOS_USER',
-                       'DCOS_PASSWORD=\$DCOS_PASSWORD',
-                       'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
-                       'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD'
-                     ],
-                     'sleep':  120,
-                     'healthcheck': 5000
-          ]                    
-        ]
+                      ],
+                      [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+                        'volumes': [
+                          '\$PEM_FILE_DIR:/tmp'
+                        ],
+                        'env':  [ 'DCOS_IP=\$DCOS_IP',
+                          'SSL=true',
+                          'SSH=true',
+                          'TOKEN_AUTHENTICATION=true',
+                          'DCOS_USER=\$DCOS_USER',
+                          'DCOS_PASSWORD=\$DCOS_PASSWORD',
+                          'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
+                          'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD'
+                        ],
+                        'sleep':  120,
+                        'healthcheck': 5000
+                      ] 
+          ]                             
+  ]
                     
   DEV = { config ->
     doDocker(config)
