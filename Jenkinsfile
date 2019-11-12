@@ -70,7 +70,7 @@ hose {
       if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
         def pempathhetzner = ""
         pempathhetzner = """${params.ENVIRONMENT}
-          |PEM_FILE_PATH=\$PEM_VMWARE_KEY
+          |PEM_FILE_PATH=\$PEM_VMWARE_PATH
           |DCOS_CLI_HOST=%%DCOSCLIHETZNER#0
           |""".stripMargin().stripIndent()
 
@@ -81,7 +81,7 @@ hose {
       } else {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
-          |PEM_FILE_PATH=\$PEM_VMWARE_PATH
+          |PEM_FILE_PATH=\$PEM_VMWARE_KEY
           |DCOS_CLI_HOST=%%DCOSCLIVMWARE#0
           |""".stripMargin().stripIndent()
 
@@ -94,7 +94,7 @@ hose {
       if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
         def pempathhetzner = ""
         pempathhetzner = """${params.ENVIRONMENT}
-          |PEM_FILE_PATH=\$PEM_VMWARE_KEY
+          |PEM_FILE_PATH=\$PEM_VMWARE_PATH
           |DCOS_CLI_HOST=%%DCOSCLIHETZNER#0
           |""".stripMargin().stripIndent()
 
@@ -105,7 +105,7 @@ hose {
       } else {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
-          |PEM_FILE_PATH=\$PEM_VMWARE_PATH
+          |PEM_FILE_PATH=\$PEM_VMWARE_KEY
           |DCOS_CLI_HOST=%%DCOSCLIVMWARE#0
           |""".stripMargin().stripIndent()
 
