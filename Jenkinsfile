@@ -65,6 +65,8 @@ hose {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_PATH
+          |CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER
+          |CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
@@ -127,6 +129,8 @@ hose {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_PATH
+          |CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER
+          |CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
