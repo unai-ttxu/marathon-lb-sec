@@ -1,4 +1,4 @@
-@Library('libpipelines@rundeck-nfs') _
+@Library('libpipelines@master') _
 
 hose {
   EMAIL = 'qa'
