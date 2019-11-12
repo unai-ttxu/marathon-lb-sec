@@ -18,7 +18,6 @@ hose {
   ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
   INSTALLPARAMETERS = """
-    | -DDCOS_CLI_HOST=%%DCOSCLI#0
     | -DREMOTE_USER=\$PEM_VMWARE_USER
     | -DINSTALL_MARATHON=false
     | """.stripMargin().stripIndent()
