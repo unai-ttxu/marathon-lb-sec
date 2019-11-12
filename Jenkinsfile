@@ -23,7 +23,7 @@ hose {
     | """.stripMargin().stripIndent()
 
   INSTALLSERVICES = [
-          ['DCOSCLI': [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+          ['DCOSCLIHETZNER': [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
                         'volumes': [
                           '\$PEM_FILE_DIR:/tmp'
                         ],
@@ -38,24 +38,25 @@ hose {
                         ],
                         'sleep':  120,
                         'healthcheck': 5000
-                      ],
-                      [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
-                        'volumes': [
-                          '\$PEM_FILE_DIR:/tmp'
-                        ],
-                        'env':  [ 'DCOS_IP=\$DCOS_IP',
-                          'SSL=true',
-                          'SSH=true',
-                          'TOKEN_AUTHENTICATION=true',
-                          'DCOS_USER=\$DCOS_USER',
-                          'DCOS_PASSWORD=\$DCOS_PASSWORD',
-                          'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
-                          'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD'
-                        ],
-                        'sleep':  120,
-                        'healthcheck': 5000
-                      ] 
-          ]                             
+                      ]
+          ],
+          ['DCOSCLIVMWARE': [ 'image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+                              'volumes': [
+                                '\$PEM_FILE_DIR:/tmp'
+                              ],
+                              'env':  [ 'DCOS_IP=\$DCOS_IP',
+                                'SSL=true',
+                                'SSH=true',
+                                'TOKEN_AUTHENTICATION=true',
+                                'DCOS_USER=\$DCOS_USER',
+                                'DCOS_PASSWORD=\$DCOS_PASSWORD',
+                                'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
+                                'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD'
+                              ],
+                              'sleep':  120,
+                              'healthcheck': 5000
+                            ]
+          ]                                          
   ]
                     
   DEV = { config ->
@@ -71,7 +72,7 @@ hose {
         def pempathhetzner = ""
         pempathhetzner = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_KEY
-          |DCOS_CLI_HOST=%%DCOSCLI#0
+          |DCOS_CLI_HOST=%%DCOSCLIHETZNER#0
           |""".stripMargin().stripIndent()
 
         def PATHHETZNER = stringToMap(pempathhetzner)
@@ -82,7 +83,7 @@ hose {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_PATH
-          |DCOS_CLI_HOST=%%DCOSCLI#1
+          |DCOS_CLI_HOST=%%DCOSCLIVMWARE#0
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
@@ -95,7 +96,7 @@ hose {
         def pempathhetzner = ""
         pempathhetzner = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_KEY
-          |DCOS_CLI_HOST=%%DCOSCLI#0
+          |DCOS_CLI_HOST=%%DCOSCLIHETZNER#0
           |""".stripMargin().stripIndent()
 
         def PATHHETZNER = stringToMap(pempathhetzner)
@@ -106,7 +107,7 @@ hose {
         def pempathvmware = ""
         pempathvmware = """${params.ENVIRONMENT}
           |PEM_FILE_PATH=\$PEM_VMWARE_PATH
-          |DCOS_CLI_HOST=%%DCOSCLI#1
+          |DCOS_CLI_HOST=%%DCOSCLIVMWARE#0
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
