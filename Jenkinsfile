@@ -12,9 +12,6 @@ hose {
   GENERATE_QA_ISSUE = true
   INSTALLTIMEOUT = 20
 
-
-  INSTALLSERVICES = []
-
   ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
   INSTALLPARAMETERS = """-DREMOTE_USER=\$PEM_VMWARE_USER
@@ -110,7 +107,7 @@ hose {
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
-        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ''), PATHVMWARE)
+        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ' '), PATHVMWARE)
 
         doAT(conf: config, groups: ['nightly'], parameters: PATHVMWAREINSTALL)
       } 
