@@ -1,4 +1,4 @@
-@Library('libpipelines@rundeck-nfs') _
+@Library('libpipelines@master') _
 
 hose {
     EMAIL = 'qa'
@@ -12,7 +12,11 @@ hose {
     GENERATE_QA_ISSUE = true
     INSTALLTIMEOUT = 20
 
-    INSTALLSERVICES = [
+
+
+
+    if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
+      INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
 			   'volumes': [
 				'\$PEM_FILE_DIR:/tmp'
@@ -24,20 +28,49 @@ hose {
                                        'DCOS_USER=\$DCOS_USER',
                                        'DCOS_PASSWORD=\$DCOS_PASSWORD',
                                        'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
-				       'PEM_PATH=/tmp/\${CLI_BOOTSTRAP_USER}_rsa'
+				                               'CLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD'
                                       ],
                            'sleep':  120,
 			                     'healthcheck': 5000]]
         ]
 
-    ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
+      ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
-    INSTALLPARAMETERS = """
+      INSTALLPARAMETERS = """
+                    | -DDCOS_CLI_HOST=%%DCOSCLI#0
+                    | -DREMOTE_USER=\$PEM_VMWARE_USER
+                    | -DPEM_FILE_PATH=\$PEM_VMWARE_KEY
+                    | -DINSTALL_MARATHON=false
+                    | """.stripMargin().stripIndent()
+    } else {
+      INSTALLSERVICES = [
+            ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
+         'volumes': [
+        '\$PEM_FILE_DIR:/tmp'
+         ],
+                           'env':     ['DCOS_IP=\$DCOS_IP',
+                                       'SSL=true',
+                                       'SSH=true',
+                                       'TOKEN_AUTHENTICATION=true',
+                                       'DCOS_USER=\$DCOS_USER',
+                                       'DCOS_PASSWORD=\$DCOS_PASSWORD',
+                                       'CLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER',
+                                       'PEM_PATH=/tmp/\${CLI_BOOTSTRAP_USER}_rsa'
+                                      ],
+                           'sleep':  120,
+                           'healthcheck': 5000]]
+        ]
+
+      ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
+
+      INSTALLPARAMETERS = """
                     | -DDCOS_CLI_HOST=%%DCOSCLI#0
                     | -DREMOTE_USER=\$PEM_VMWARE_USER
                     | -DPEM_FILE_PATH=\$PEM_FILE_PATH
                     | -DINSTALL_MARATHON=false
                     | """.stripMargin().stripIndent()
+
+    }
                     
     DEV = { config ->
         doDocker(config)
