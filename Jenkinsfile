@@ -21,6 +21,11 @@ hose {
     | -DDCOS_CLI_HOST=%%DCOSCLI#0
     | -DREMOTE_USER=\$PEM_VMWARE_USER
     | -DINSTALL_MARATHON=false
+    | -DDCOS_IP=\$DCOS_IP
+    | -DDCOS_USER=\$DCOS_USER
+    | -DDCOS_PASSWORD=\$DCOS_PASSWORD
+    | -DCLI_BOOTSTRAP_USER=\$CLI_BOOTSTRAP_USER
+    | -DCLI_BOOTSTRAP_PASSWORD=\$CLI_BOOTSTRAP_PASSWORD
     | """.stripMargin().stripIndent()
                     
   DEV = { config ->
