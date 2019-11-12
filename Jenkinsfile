@@ -17,8 +17,7 @@ hose {
 
   ATCREDENTIALS = [[TYPE:'sshKey', ID:'PEM_VMWARE']]
 
-  INSTALLPARAMETERS = """
-    | -DREMOTE_USER=\$PEM_VMWARE_USER
+  INSTALLPARAMETERS = """-DREMOTE_USER=\$PEM_VMWARE_USER
     | -DINSTALL_MARATHON=false
     | """.stripMargin().stripIndent()
 
@@ -87,7 +86,7 @@ hose {
           |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
-        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ''), PATHVMWARE) 
+        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ' '), PATHVMWARE) 
 
         doAT(conf: config, parameters: PATHVMWAREINSTALL)
       }
