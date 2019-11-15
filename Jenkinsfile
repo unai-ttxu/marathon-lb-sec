@@ -12,6 +12,8 @@ hose {
     GENERATE_QA_ISSUE = true
     INSTALLTIMEOUT = 20
 
+    ANCHORE_POLICY = "production"
+
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
                            'env':     ['DCOS_IP=\$DCOS_IP',

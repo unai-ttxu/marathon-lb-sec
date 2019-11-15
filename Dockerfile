@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         socat \
         curl \
         jq \
-    && apt-get install -y rsyslog \
+    && apt-get install -y --no-install-recommends rsyslog \
     && rm -rf /var/lib/apt/lists/*
 
 ENV TINI_VERSION=v0.16.1 \
