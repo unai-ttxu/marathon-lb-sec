@@ -2,7 +2,7 @@
 
 ## 0.6.0 (upcoming)
 
-* Pending changelog
+* [EOS-3126] Fix and activate Anchore tests
 
 ## 0.5.0-96093b8 (Built: October 03, 2019 | Pre-release)
 
