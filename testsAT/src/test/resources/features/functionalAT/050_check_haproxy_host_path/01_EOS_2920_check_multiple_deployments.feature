@@ -30,7 +30,7 @@ Feature: Check multiple deployments which share vhost
 
   Scenario Outline:[03] Check deployment for different services nginx
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
-    And I run 'dcos task | grep -w '<id>' | awk '{print $4}' | grep R' in the ssh connection with exit status '0'
+    And in less than '100' seconds, checking each '10' seconds, the command output 'dcos task | grep -w '<id>' | awk '{print $4}' | grep R | wc -l' contains '1' with exit status '0'
     And I run 'dcos marathon task list | grep -w /'<id>' | grep True | awk '{print $5}'' in the ssh connection with exit status '0' and save the value in environment variable 'nginxTaskId'
     And I run 'dcos marathon task show !{nginxTaskId} | jq 'select(.state=="TASK_RUNNING" and .healthCheckResults[].alive==true)'' in the ssh connection with exit status '0'
     Examples:

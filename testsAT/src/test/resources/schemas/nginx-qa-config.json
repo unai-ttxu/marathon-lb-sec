@@ -1,4 +1,54 @@
 {
+  "volumes": null,
+  "id": "/nginx-qa",
+  "cmd": null,
+  "args": null,
+  "user": null,
+  "env": null,
+  "instances": 1,
+  "cpus": 0.5,
+  "mem": 256,
+  "disk": 0,
+  "gpus": 0,
+  "executor": null,
+  "constraints": null,
+  "fetch": null,
+  "storeUrls": null,
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "container": {
+    "docker": {
+      "image": "qa.stratio.com/nginx:1.10.3-alpine",
+      "forcePullImage": false,
+      "privileged": false,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp",
+          "servicePort": 80
+        }
+      ],
+      "network": "BRIDGE"
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "path": "/",
+      "gracePeriodSeconds": 100,
+      "intervalSeconds": 20,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "readinessChecks": null,
+  "dependencies": null,
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 1,
+    "maximumOverCapacity": 1
+  },
   "labels": {
     "HAPROXY_0_BACKEND_WEIGHT": "0",
     "DCOS_SERVICE_SCHEME": "http",
@@ -9,67 +59,18 @@
     "HAPROXY_0_PATH": null,
     "HAPROXY_0_VHOST": "nginx-qa.labs.stratio.com"
   },
-  "id": "/nginx-qa",
   "acceptedResourceRoles": [
     "*"
   ],
-  "backoffFactor": 1.15,
-  "backoffSeconds": 1,
-  "container": {
-    "portMappings": [
-      {
-        "containerPort": 80,
-        "labels": {
-          "VIP_0": "/nginx-qa-minuteman:1234"
-        },
-        "servicePort": 0
-      }
-    ],
-    "type": "DOCKER",
-    "volumes": [],
-    "docker": {
-      "image": "qa.stratio.com/nginx:1.10.3-alpine",
-      "forcePullImage": false,
-      "privileged": false,
-      "parameters": []
-    }
-  },
-  "cpus": 1,
-  "disk": 0,
-  "healthChecks": [
+  "residency": null,
+  "secrets": null,
+  "taskKillGracePeriodSeconds": null,
+  "portDefinitions": [
     {
-      "gracePeriodSeconds": 100,
-      "ignoreHttp1xx": false,
-      "intervalSeconds": 20,
-      "maxConsecutiveFailures": 3,
-      "portIndex": 0,
-      "timeoutSeconds": 20,
-      "delaySeconds": 15,
-      "protocol": "HTTP",
-      "path": "/",
-      "ipProtocol": "IPv4"
+      "port": 10101,
+      "protocol": "tcp",
+      "labels": {}
     }
   ],
-  "instances": 1,
-  "maxLaunchDelaySeconds": 3600,
-  "mem": 256,
-  "gpus": 0,
-  "networks": [
-    {
-      "name": "stratio",
-      "mode": "container"
-    }
-  ],
-  "requirePorts": false,
-  "upgradeStrategy": {
-    "maximumOverCapacity": 1,
-    "minimumHealthCapacity": 1
-  },
-  "killSelection": "YOUNGEST_FIRST",
-  "unreachableStrategy": {
-    "inactiveAfterSeconds": 0,
-    "expungeAfterSeconds": 0
-  },
-  "fetch": [],
-  "constraints": []
+  "requirePorts": false
 }

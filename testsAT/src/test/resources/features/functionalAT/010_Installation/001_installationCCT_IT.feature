@@ -1,5 +1,5 @@
 @rest
-@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_TENANT,MLB_FLAVOUR,DCOS_USER,DCOS_PASSWORD)
+@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_TENANT,MLB_FLAVOUR,DCOS_USER,DCOS_PASSWORD,DCOS_IP)
 Feature: [QATM-1870] Marathon-LB installation
 
   Scenario:[Setup][01] Prepare prerequisites
@@ -45,8 +45,8 @@ Feature: [QATM-1870] Marathon-LB installation
     And I set sso token using host '!{EOS_ACCESS_POINT}' with user '!{DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant '!{CC_TENANT}'
     And I securely send requests to '!{EOS_ACCESS_POINT}:443'
     When I send a 'GET' request to '/service/deploy-api/deployments/service?instanceName=marathonlb'
-    Then I save element '$' in environment variable 'publicHostIP'
-    And I run 'echo '!{publicHostIP}' | jq -r .tasks[].host' locally and save the value in environment variable 'publicHostIP'
+    Then I save element '$.tasks[?(@.state=="TASK_RUNNING")]' in environment variable 'publicHostIP'
+    And I run 'echo '!{publicHostIP}' | jq -r .[].host' locally and save the value in environment variable 'publicHostIP'
 
   Scenario:[04] Make sure service is ready
     Given I send requests to '!{publicHostIP}:9090'

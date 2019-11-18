@@ -1,5 +1,5 @@
 @rest
-@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,EOS_INSTALLER_VERSION,DCOS_TENANT,MLB_FLAVOUR,DCOS_USER,DCOS_PASSWORD,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
+@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,EOS_INSTALLER_VERSION,DCOS_TENANT,DCOS_USER,DCOS_PASSWORD,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD,DCOS_IP)
 Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
 
   @include(feature:../010_Installation/001_installationCCT_IT.feature,scenario:[Setup][01] Prepare prerequisites)
@@ -29,7 +29,7 @@ Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
     And I run 'sudo docker ps | grep eos-installer | awk '{print $1}'' in the ssh connection and save the value in environment variable 'containerId'
     And I run 'sudo docker exec -t !{containerId} /stratio_volume/marathon-lb-app-certs.sh' in the ssh connection
     And I wait '60' seconds
-    And I open a ssh connection to '${DCOS_CLI_HOST}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
+    And I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     And I outbound copy 'src/test/resources/schemas/nginx-qa-config.json' through a ssh connection to '/tmp'
     And I run 'sed -i '/"HAPROXY_0_PATH": null,/d' /tmp/nginx-qa-config.json ; dcos marathon app add /tmp/nginx-qa-config.json ; rm -f /tmp/nginx-qa-config.json' in the ssh connection
     Then in less than '300' seconds, checking each '20' seconds, the command output 'dcos task | grep nginx-qa | grep R | wc -l' contains '1'
