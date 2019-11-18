@@ -35,3 +35,5 @@ Feature: Check multiple deployments which share vhost
     Then the service response status must be '200'
     And I save element '$' in environment variable 'exporters'
     And I run 'echo '!{exporters}' | jq '.data.activeTargets[] | select(.discoveredLabels.job=="services" and .health=="up" and .scrapeUrl=="http://'<PUBLIC_IP>':9090/metrics" and .discoveredLabels.name=="marathonlb" and .discoveredLabels.task_id=="marathonlb" and .labels.name=="marathonlb" and .labels.task_id=="marathonlb")'' locally
+    And I run 'curl -XGET '<PUBLIC_IP>':9090/metrics' locally
+    And the service response status must be '200'
