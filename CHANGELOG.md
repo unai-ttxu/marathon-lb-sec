@@ -4,7 +4,7 @@
 
 * [EOS-3126] Fix and activate Anchore tests
 
-## 0.5.0-96093b8 (Built: October 03, 2019 | Pre-release)
+## 0.5.0-96093b8 (Built: October 03, 2019 | Released: November 18, 2019)
 
 * [EOS-3031] Bump kms_utils to version 0.4.6
 * [EOS-2970] Treat HAPROXY_RSYSLOG as a boolean parameter
