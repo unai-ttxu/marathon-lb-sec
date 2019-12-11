@@ -1,5 +1,5 @@
 @rest
-@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_TENANT,MLB_FLAVOUR,DCOS_USER,DCOS_PASSWORD,DCOS_IP)
+@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,MLB_FLAVOUR,DCOS_PASSWORD,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
 Feature: [QATM-1870] Marathon-LB installation
 
   Scenario:[Setup][01] Prepare prerequisites
@@ -13,11 +13,11 @@ Feature: [QATM-1870] Marathon-LB installation
   @runOnEnv(UNIVERSE_MARATHONLB_VERSION)
   Scenario:[Setup][02] Update variables with multitenant configuration
     Given I save '/${UNIVERSE_MARATHONLB_VERSION}' in variable 'UNIVERSE_MLB_VERSION'
-    And I save '?tenantId=${DCOS_TENANT}' in variable 'MLB_INSTALLATION_TENANT'
+    And I save '?tenantId=!{DCOS_TENANT}' in variable 'MLB_INSTALLATION_TENANT'
 
   Scenario:[01] Get schema to install Marathon-LB
-    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '!{DCOS_USER}' with user '${REMOTE_USER}' and pem file '${PEM_FILE_PATH}' over SSH port '${EOS_NEW_SSH_PORT:-22}'
-    Given I set sso token using host '!{EOS_ACCESS_POINT}' with user '!{DCOS_TENANT_USER}' and password '!{DCOS_TENANT_PASSWORD}' and tenant '!{CC_TENANT}'
+    Given I authenticate to DCOS cluster '!{DCOS_IP}' using email '!{DCOS_USER}' with user '${REMOTE_USER}' and pem file '${PEM_FILE_PATH}' over SSH port '${EOS_NEW_SSH_PORT:-22}'
+    Given I set sso token using host '!{EOS_ACCESS_POINT}' with user '!{DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant '!{DCOS_TENANT}'
     And I securely send requests to '!{EOS_ACCESS_POINT}:443'
     Given I send a 'GET' request to '/service/deploy-api/deploy/${MARATHON_LB_SERVICE:-marathon-lb}/${MLB_FLAVOUR}!{UNIVERSE_MLB_VERSION}/schema?level=1'
     Then I save element '$' in environment variable 'marathonlb-json-schema'
@@ -32,25 +32,9 @@ Feature: [QATM-1870] Marathon-LB installation
     Then the service response status must be '202'
     And I run 'rm -f target/test-classes/schemas/cct/marathonlb-${MLB_FLAVOUR}.json' locally
 
-  Scenario:[02] Check correct deployment
-    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '!{DCOS_USER}' with user '${REMOTE_USER}' and pem file '${PEM_FILE_PATH}' over SSH port '${EOS_NEW_SSH_PORT:-22}'
-    And I set sso token using host '!{EOS_ACCESS_POINT}' with user '!{DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant '!{CC_TENANT}'
-    And I securely send requests to '!{EOS_ACCESS_POINT}:443'
-    When in less than '500' seconds, checking each '20' seconds, I send a 'GET' request to '/service/deploy-api/deployments/service?instanceName=marathonlb' so that the response contains '"healthy":1'
-    And in less than '500' seconds, checking each '20' seconds, I send a 'GET' request to '/service/deploy-api/deployments/service?instanceName=marathonlb' so that the response contains '"status":2'
-    And in less than '500' seconds, checking each '20' seconds, I send a 'GET' request to '/service/deploy-api/deployments/service?instanceName=marathonlb' so that the response contains '"state":"TASK_RUNNING"'
-
-  Scenario:[03] Obtain node where marathon-lb-sec is running
-    Given I authenticate to DCOS cluster '${DCOS_IP}' using email '!{DCOS_USER}' with user '${REMOTE_USER}' and pem file '${PEM_FILE_PATH}' over SSH port '${EOS_NEW_SSH_PORT:-22}'
-    And I set sso token using host '!{EOS_ACCESS_POINT}' with user '!{DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant '!{CC_TENANT}'
-    And I securely send requests to '!{EOS_ACCESS_POINT}:443'
-    When I send a 'GET' request to '/service/deploy-api/deployments/service?instanceName=marathonlb'
-    Then I save element '$.tasks[?(@.state=="TASK_RUNNING")]' in environment variable 'publicHostIP'
-    And I run 'echo '!{publicHostIP}' | jq -r .[].host' locally and save the value in environment variable 'publicHostIP'
-
-  Scenario:[04] Make sure service is ready
-    Given I send requests to '!{publicHostIP}:9090'
-    When I send a 'GET' request to '/_haproxy_health_check'
-    Then the service response status must be '200'
-    When I send a 'GET' request to '/_haproxy_getconfig'
-    Then the service response status must be '200'
+  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[Setup] Retrieve info from bootstrap)
+  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[01] Check correct deployment)
+  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[02] Obtain node where marathon-lb-sec is running)
+  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[03] Make sure service is ready)
+  Scenario:[02] Check deployment
+    Then I wait '5' seconds

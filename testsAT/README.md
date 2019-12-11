@@ -30,16 +30,14 @@ These tests will be executed as part of the continuous integration flow as follo
     - A marathonLB service is installed using the flavour passed as a parameter.
     - Some checks are run to make sure it has been installed correctly.
 - Needed:
-    - DCOS_IP: IP from the cluster
-    - BOOTSTRAP_IP: IP from the bootstrap
-    - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
-    - DCOS_CLI_USER: dcos-cli docker user
-    - DCOS_CLI_PASSWORD: dcos-cli docker password
+    - BOOTSTRAP_IP: IP from the bootstrap    
     - MLB_FLAVOUR: MarathonLB flavour to be installed
     - REMOTE_USER: operational user for cluster machines
     - PEM_FILE_PATH: local path to pem file for cluster machines
     - UNIVERSE_MARATHONLB_VERSION: universe version
-    - DCOS_TENANT: cluster tenant 
+    - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
+    - DCOS_CLI_USER: dcos-cli docker user
+    - DCOS_CLI_PASSWORD: dcos-cli docker password    
 - Optional:
     - INSTANCE: Marathon LB instance (default: marathonlb) 
     - SERVICE_CPU: CPU assigned to Marathon LB service (default: 2)
@@ -47,7 +45,7 @@ These tests will be executed as part of the continuous integration flow as follo
     - SERVICE_DISK: Disk assigned to Marathon LB service (default: 1)
     - EOS_NEW_SSH_PORT: SSH port to connect with any cluster node (default: 22)
 - Usage example:
-    `mvn clean verify -Dgroups=installation_cct -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DDCOS_IP=XXX.XXX.XXX.XXX -DMLB_FLAVOUR=<model> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
+    `mvn clean verify -Dgroups=installation_cct -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DUNIVERSE_MARATHONLB_VERSION=X.X.X -DMLB_FLAVOUR=<model> -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DlogLevel=DEBUG`
 
 ### Check Invalid App Certificates
 - Pre-requisites:
@@ -61,23 +59,10 @@ These tests will be executed as part of the continuous integration flow as follo
     - BOOTSTRAP_IP: IP from the bootstrap
     - REMOTE_USER: operational user for cluster machines
     - PEM_FILE_PATH: local path to pem file for cluster machines
-    - EOS_INSTALLER_VERSION: EOS version           
+    - EOS_INSTALLER_VERSION: EOS version
+    - DCOS_PASSWORD: DCOS cluster password
 - Usage example:
     `mvn clean verify -Dgroups=checkInvalidAppCerts -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DlogLevel=DEBUG -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DEOS_INSTALLER_VERSION=<EOS_Version>`
-
-### IPtables
-- Pre-requisites:
-    - A marathonLB service must be installed.
-- Description:
-    - Some checks are run to make sure it has been installed correctly.
-- Needed:
-    - DCOS_CLI_HOST: name/IP of the dcos-cli docker container
-    - DCOS_CLI_USER: dcos-cli docker user
-    - DCOS_CLI_PASSWORD: dcos-cli docker password
-    - REMOTE_USER: operational user for cluster machines
-    - PEM_FILE_PATH: local path to pem file for cluster machines           
-- Usage example:
-    `mvn clean verify -Dgroups=iptables -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DlogLevel=DEBUG`
 
 ### Centralized Logs
 - Pre-requisites:
@@ -115,6 +100,7 @@ These tests will be executed as part of the continuous integration flow as follo
     - DCOS_CLI_PASSWORD: dcos-cli docker password
     - REMOTE_USER: operational user for cluster machines
     - PEM_FILE_PATH: local path to pem file for cluster machines
+- Optional:    
     - EOS_VAULT_PORT: vault port (default: 8200)
 - Usage example: 
     `mvn clean verify -Dgroups=vaultRenewalToken -DDCOS_CLI_HOST=XXX.XXX.XXX.XXX -DDCOS_CLI_USER=user -DDCOS_CLI_PASSWORD=password -DEOS_VAULT_PORT=8200 -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key>`
@@ -128,6 +114,7 @@ These tests will be executed as part of the continuous integration flow as follo
     - BOOTSTRAP_IP: IP from the bootstrap
     - REMOTE_USER: operational user for cluster machines
     - PEM_FILE_PATH: local path to pem file for cluster machines
+- Optional:    
     - EOS_VAULT_PORT: vault port (default: 8200)
 - Usage example: 
     `mvn clean verify -Dgroups=certsMarathonLBServ -DEOS_VAULT_PORT=8200 -DBOOTSTRAP_IP=XXX.XXX.XXX.XXX -DREMOTE_USER=remote_user -DPEM_FILE_PATH=<file_path_key> -DlogLevel=DEBUG`

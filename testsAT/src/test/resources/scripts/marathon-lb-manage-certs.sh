@@ -18,15 +18,10 @@ CONSUL_DATACENTER=$(grep -Po '"consulDatacenter":\s"(\d*?,|.*?[^\\]")' /stratio_
 
 curl -k -s -GET -H "X-Vault-Token:${VAULT_TOKEN}" "https://vault.service.${INTERNAL_DOMAIN}:8200/v1/userland/certificates/marathon-lb" | jq .data > /stratio_volume/marathon-lb-cert-backup.json
 
-PARAMS=""
 if [ -f "/stratio_volume/certificates_additional_data" ]; then
-    PASSWORD=$(awk -F '"' '/^pki_password/{print $2}' /stratio_volume/certificates_additional_data)
-    if [[ "$PASSWORD" ]]; then
-        echo "QA - Get CA password"
-        PARAMS="-p $PASSWORD"
-    fi
+  source /stratio_volume/certificates_additional_data
 fi
 
 cd /stratio/*secret-utils/
-bash -e gencerts -l /stratio_volume/certs_client_marathonlb.list -w -v vault.service.$INTERNAL_DOMAIN -o 8200 -t $VAULT_TOKEN -d $INTERNAL_DOMAIN -c $CONSUL_DATACENTER $PARAMS
+bash -e gencerts -l /stratio_volume/certs_client_marathonlb.list -w -v vault.service.$INTERNAL_DOMAIN -o 8200 -t $VAULT_TOKEN -d $INTERNAL_DOMAIN -c $CONSUL_DATACENTER -p ${pki_password:-stratio}
 
