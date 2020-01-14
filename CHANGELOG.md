@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (upcoming)
+## 0.6.0 (January 14, 2020)
 
 * [EOS-3126] Fix PyJWT vulnerability
 * [EOS-3126] Fix and activate Anchore tests
