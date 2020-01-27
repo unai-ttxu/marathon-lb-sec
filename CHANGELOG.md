@@ -4,7 +4,7 @@
 
 * Pending changelog
 
-## 0.6.0-458dce6 (Built: January 14, 2020 | Pre-release)
+## 0.6.0-458dce6 (Built: January 14, 2020 | Released: January 27, 2020)
 
 * [EOS-3126] Fix PyJWT vulnerability
 * [EOS-3126] Fix and activate Anchore tests
