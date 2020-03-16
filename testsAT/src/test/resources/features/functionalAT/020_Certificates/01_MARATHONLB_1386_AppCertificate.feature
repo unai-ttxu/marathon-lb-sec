@@ -1,29 +1,24 @@
-@rest
+@rest @dcos
 @mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,EOS_INSTALLER_VERSION,DCOS_PASSWORD,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
 Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
 
-  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[Setup] Retrieve info from bootstrap)
-  @include(feature:../010_Installation/002_checkDeployment_IT.feature,scenario:[02] Obtain node where marathon-lb-sec is running)
-  Scenario:[01] Obtain marathon-lb node
-    Then I wait '5' seconds
-
   @runOnEnv(EOS_INSTALLER_VERSION<0.22.11)
-  Scenario:[02a] Preparing files
+  Scenario:[01a] Preparing files
     Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I outbound copy 'src/test/resources/scripts/marathon-lb-app-certs.sh' through a ssh connection to '/tmp'
     And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
 
   @runOnEnv(EOS_INSTALLER_VERSION=0.22.11||EOS_INSTALLER_VERSION>0.22.11)
-  Scenario:[02b] Preparing files
+  Scenario:[01b] Preparing files
     Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I run 'sudo touch /stratio_volume/certs.list' in the ssh connection
     And I outbound copy 'src/test/resources/scripts/marathon-lb-app-certs.sh' through a ssh connection to '/tmp'
     And I run 'sed -i s/"DNS:nginx-qa.labs.stratio.com"/"DNS:nginx-qa.!{EOS_DNS_SEARCH}"/g /tmp/marathon-lb-app-certs.sh' in the ssh connection
     And I run 'cp /stratio_volume/certs.list certs_custom_app_marathonlb.list' in the ssh connection
 
-  Scenario:[03] Deploying marathon-lb-sec with an nginx certificate
+  Scenario:[02] Deploying marathon-lb-sec with an nginx certificate
     Given I run 'sudo cp /etc/hosts /tmp/hostbackup' locally
-    And I run 'cat /etc/hosts | grep nginx-qa.!{EOS_DNS_SEARCH} || echo "!{publicHostIP} nginx-qa.!{EOS_DNS_SEARCH}" | sudo tee -a /etc/hosts' locally
+    And I run 'cat /etc/hosts | grep nginx-qa.!{EOS_DNS_SEARCH} || echo "!{PUBLIC_NODE} nginx-qa.!{EOS_DNS_SEARCH}" | sudo tee -a /etc/hosts' locally
     Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I run 'cd /tmp && sudo chmod +x marathon-lb-app-certs.sh' in the ssh connection
     And I run 'sudo mv /tmp/marathon-lb-app-certs.sh /stratio_volume/marathon-lb-app-certs.sh' in the ssh connection
@@ -46,11 +41,11 @@ Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
     And I run 'sudo cp /tmp/hostbackup /etc/hosts' locally
 
   @runOnEnv(EOS_INSTALLER_VERSION<0.22.11)
-  Scenario:[04] Deleting files
+  Scenario:[03a] Deleting files
     Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I run 'sudo rm -rf /stratio_volume/certs_custom_app_marathonlb.list ; sudo rm -rf /stratio_volume/marathon-lb-app-certs.sh' in the ssh connection
 
   @runOnEnv(EOS_INSTALLER_VERSION=0.22.11||EOS_INSTALLER_VERSION>0.22.11)
-  Scenario:[05] Deleting files
+  Scenario:[03b] Deleting files
     Then I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
     And I run 'sudo rm -rf /stratio_volume/certs.list ; sudo rm -rf /stratio_volume/certs_custom_app_marathonlb.list ; sudo rm -rf /stratio_volume/marathon-lb-app-certs.sh' in the ssh connection

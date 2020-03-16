@@ -1,14 +1,10 @@
-@rest
-@mandatory(DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
+@rest @dcos
+@mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_PASSWORD,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
 Feature:[MARATHONLB-1388] Centralized logs
 
   Background:[Setup] Get MarathonLB task id
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     When I run 'dcos task | grep marathon.*lb.* | tail -1 | awk '{print $5}'' in the ssh connection and save the value in environment variable 'TaskID'
-
-  Scenario:[Setup] Get Root Vault Token
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
-    Then I obtain basic information from bootstrap
 
   Scenario:[01] Check marathon-lb logs format
     And I run 'expr `dcos task log --lines 10000 !{TaskID} 2>&1 | wc -l` \* 5 / 100' in the ssh connection and save the value in environment variable 'totalLinesThreshold'

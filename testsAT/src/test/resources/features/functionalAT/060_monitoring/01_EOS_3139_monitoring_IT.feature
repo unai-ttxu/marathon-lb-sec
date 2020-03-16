@@ -1,12 +1,6 @@
-@rest
+@rest @dcos
 @mandatory(BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_PASSWORD,EOS_MONITOR_CLUSTER,UNIVERSE_VERSION,EOS_PUBLIC_AGENTS_LIST,DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD)
 Feature: Check multiple deployments which share vhost
-
-  @runOnEnv(EOS_MONITOR_CLUSTER=yes)
-  @runOnEnv(UNIVERSE_VERSION>0.6.0||UNIVERSE_VERSION=0.6.0)
-  Scenario:[01] Obtain info from bootstrap
-    Given I open a ssh connection to '${BOOTSTRAP_IP}' in port '${EOS_NEW_SSH_PORT:-22}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
-    Then I obtain basic information from bootstrap
 
   @runOnEnv(EOS_MONITOR_CLUSTER=yes)
   @runOnEnv(UNIVERSE_VERSION>0.6.0||UNIVERSE_VERSION=0.6.0)
