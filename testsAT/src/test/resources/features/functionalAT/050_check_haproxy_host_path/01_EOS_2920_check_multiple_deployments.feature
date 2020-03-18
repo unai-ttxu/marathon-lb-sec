@@ -1,7 +1,8 @@
 @rest @dcos
-@mandatory(DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD,BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_PASSWORD)
+@mandatory(DCOS_CLI_HOST,DCOS_CLI_USER,DCOS_CLI_PASSWORD,BOOTSTRAP_IP,REMOTE_USER,PEM_FILE_PATH,DCOS_PASSWORD,DOCKER_REGISTRY_OFFLINE)
 Feature: Check multiple deployments which share vhost
 
+  @runOnEnv(DOCKER_REGISTRY_OFFLINE=no)
   Scenario Outline:[01] Deploy different services nginx
     Given I create file '<id>-config.json' based on 'schemas/nginx-qa-config.json' as 'json' with:
       | $.id                                | REPLACE | <id>          | string |
@@ -22,6 +23,7 @@ Feature: Check multiple deployments which share vhost
       | nginx-qa-testqa2     | nginx-qa.!{EOS_DNS_SEARCH} | testqa2   | 2       |
       | nginx-qa-testqa3     | nginx-qa.!{EOS_DNS_SEARCH} | testqa3   | 3       |
 
+  @runOnEnv(DOCKER_REGISTRY_OFFLINE=no)
   Scenario Outline:[02] Check deployment for different services nginx
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     And in less than '100' seconds, checking each '10' seconds, the command output 'dcos task | grep -w '<id>' | awk '{print $4}' | grep R | wc -l' contains '1' with exit status '0'
@@ -34,6 +36,7 @@ Feature: Check multiple deployments which share vhost
       | nginx-qa-testqa2     |
       | nginx-qa-testqa3     |
 
+  @runOnEnv(DOCKER_REGISTRY_OFFLINE=no)
   Scenario:[03] Check rules in MarathonLB
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     And I run 'curl -XGET http://!{PUBLIC_NODE}:9090/_haproxy_getconfig' in the ssh connection with exit status '0' and save the value in environment variable 'haproxy_getConfig'
@@ -46,6 +49,7 @@ Feature: Check multiple deployments which share vhost
     And I run 'diff target/test-classes/schemas/marathonlb_https_rules.txt /tmp/rules.txt' locally with exit status '0'
     And I run 'rm -f /tmp/rules.txt' locally
 
+  @runOnEnv(DOCKER_REGISTRY_OFFLINE=no)
   Scenario Outline:[04] Check deployment for different services nginx
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'
     And I run 'dcos marathon app remove <id>' in the ssh connection
