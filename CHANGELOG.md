@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.1 (upcoming)
+## 0.6.1 (March 20, 2020)
 
 * Updated debian dependency to fix vulnerabilities
 
