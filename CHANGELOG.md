@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 (upcoming)
+
+* Updated debian dependency to fix vulnerabilities
+
 ## 0.6.0 (January 14, 2020)
 
 * [EOS-3126] Fix PyJWT vulnerability
