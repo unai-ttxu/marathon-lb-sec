@@ -2,7 +2,7 @@
 
 ## 0.7.0 (upcoming)
 
-* Pending changelog
+* [EOS-3590] Fix Vault token renewal
 
 ## 0.6.0-458dce6 (Built: January 14, 2020 | Released: January 27, 2020)
 
