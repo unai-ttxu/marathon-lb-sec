@@ -31,7 +31,7 @@ Feature:[QATM-2113] Download certificates only of new deployed apps - Invalid ce
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep TASK_RUNNING | wc -l' contains '1'
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep healthCheckResults | wc -l' contains '1'
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep  '"alive": true' | wc -l' contains '1'
-    Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 100 !{TaskID} 2>/dev/null | grep 'Does not exists certificate for /nginx-qa' | wc -l' contains '1'
+    Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 500 !{TaskID} 2>/dev/null | grep 'Does not exists certificate for /nginx-qa' | wc -l' contains '1'
 
   Scenario:[04] Uninstall nginx-qa
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${DCOS_CLI_USER}' and password '${DCOS_CLI_PASSWORD}'

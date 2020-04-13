@@ -34,10 +34,10 @@ Feature:[MARATHONLB-1386] Deploying marathon-lb-sec with an nginx certificate
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep TASK_RUNNING | wc -l' contains '1'
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep healthCheckResults | wc -l' contains '1'
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{nginx-qaTaskId} | grep  '"alive": true' | wc -l' contains '1'
-    Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 100 !{TaskID} 2>/dev/null | grep 'Downloaded certificate nginx-qa.pem' | wc -l' contains '1'
+    Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 500 !{TaskID} 2>/dev/null | grep 'Downloaded certificate nginx-qa.pem' | wc -l' contains '1'
     Given I run 'dcos marathon app remove --force nginx-qa' in the ssh connection
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task | awk '{print $1}' | grep -c nginx-qa' contains '0'
-    And in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 100 !{TaskID} 2>/dev/null | grep 'Deleted certificate nginx-qa.pem' | wc -l' contains '1'
+    And in less than '300' seconds, checking each '10' seconds, the command output 'dcos task log --lines 500 !{TaskID} 2>/dev/null | grep 'Deleted certificate nginx-qa.pem' | wc -l' contains '1'
     And I run 'sudo cp /tmp/hostbackup /etc/hosts' locally
 
   @runOnEnv(EOS_INSTALLER_VERSION<0.22.11)
