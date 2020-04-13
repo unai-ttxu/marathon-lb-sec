@@ -5,6 +5,8 @@ import os
 import subprocess
 import time
 
+from dateutil import parser
+
 head_vault_hosts = 'OLD_IFS=${IFS};IFS=\',\' read -r -a VAULT_HOSTS <<< \"$STRING_VAULT_HOST\";IFS=${OLD_IFS};'
 source_kms_utils = '. /usr/sbin/kms_utils.sh;'
 
@@ -54,9 +56,7 @@ def check_token_needs_renewal(force):
   
   #Convert time as given from Vault to epoch time
   expire_time_vault = jsonInfo['data']['expire_time']
-  expire_time_index = expire_time_vault.index('.')
-  expire_time_tuple = time.strptime(expire_time_vault[:expire_time_index], '%Y-%m-%dT%H:%M:%S')
-  expire_time = time.mktime(expire_time_tuple)
+  expire_time = int(parser.parse(expire_time_vault).timestamp())
 
   ttl = jsonInfo['data']['ttl']
   
@@ -98,6 +98,18 @@ def renewal_token():
   command = 'token_renewal'
   resp,_ = exec_with_kms_utils(variables, command, '')
   respArr = resp.decode("utf-8").split(',')
+  # Due to kms_utils.sh issue, response could contain a spurious status_code as follows
+  #
+  # 000{request_response}
+  #
+  # This 000 spurious status code is caused by an empty parameter set by kms_utils.sh
+  # which results in an additional curl to an empty URL.
+  #
+  # As fixing kms_utils.sh could generate strong side effects, we need to strip this
+  # spurious response code from the request response here
+  spurious_status_code = '000'
+  if respArr[1].startswith(spurious_status_code):
+    respArr[1] = respArr[1][len(spurious_status_code):]
   jsonValue = json.loads(','.join(respArr[1:]))
   logger.debug('status ' + respArr[0])
   logger.debug(jsonValue)
